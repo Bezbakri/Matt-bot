@@ -42,7 +42,7 @@ class FunCommands(commands.Cog):
     )
     @commands.check(is_owner)
     async def addcopypasta(self, ctx, title, copypasta):
-        f = open("copypastas.csv", "a")
+        f = open("assets/copypastas.csv", "a")
         fwriter = csv.writer(f)
         fwriter.writerow([title, copypasta])
         await ctx.channel.send(f"added copypasta {title}")
