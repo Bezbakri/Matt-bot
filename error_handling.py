@@ -7,8 +7,8 @@ Custom error classes from errors.py: https://github.com/nwunderly/ouranos/blob/m
 Note: this code is untested but should help with implementing custom error handling for something like command responses.
 """
 
-from discord.ext import commands
-import discord
+from nextcord.ext import commands
+import nextcord as discord
 
 TICK_RED = "❌"
 

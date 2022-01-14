@@ -6,8 +6,8 @@ Created on Wed Dec 29 21:43:23 2021
 """
 
 import prefix
-import discord
-from discord.ext import commands
+import nextcord as discord
+from nextcord.ext import commands
 import requests
 from PIL import Image, ImageDraw, ImageFont
 import os

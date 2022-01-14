@@ -4,9 +4,9 @@ Created on Mon Dec 27 16:26:15 2021
 
 @author: bezbakri
 """
-import discord
+import nextcord as discord
 import random
-from discord.ext import commands
+from nextcord.ext import commands
 import prefix
 from datetime import datetime
 import csv
@@ -109,8 +109,8 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
                     freader = csv.reader(f)
                     for row in freader:
                         if row[0] == copypasta_titles[i]:
-                            copypasta_to_send = row[1]
-                await ctx.channel.send(copypasta_to_send.replace("\\n", "\n"))
+                            copypasta_to_send = row[1].replace("\\n", "\n")
+                await ctx.channel.send(f"**{row[0]}**\n{copypasta_to_send}")
         
         elif arg in copypasta_titles:
             if arg == "Petersonian":

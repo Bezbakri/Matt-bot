@@ -5,12 +5,12 @@ Created on Sat Dec 25 18:42:42 2021
 @author: bezbakri
 """
 
-import discord
+import nextcord as discord
 from datetime import datetime
 import pytz
 import os
 from dotenv import load_dotenv
-from discord.ext import commands
+from nextcord.ext import commands
 from FunCommands import FunCommands
 import prefix
 from ImageCommands import ImageCommands
