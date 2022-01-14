@@ -53,7 +53,7 @@ class FunCommands(commands.Cog):
     @commands.command(
         name = "copypasta",
         help = copypasta_help,
-        brief = "gives you a random copypasta"
+        brief = "gives you a copypasta"
     )
     async def copypasta(self, ctx, *arg):
         
@@ -109,8 +109,9 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
                     freader = csv.reader(f)
                     for row in freader:
                         if row[0] == copypasta_titles[i]:
+                            copypasta_title = row[0]
                             copypasta_to_send = row[1].replace("\\n", "\n")
-                await ctx.channel.send(f"**{row[0]}**\n{copypasta_to_send}")
+                await ctx.channel.send(f"**{copypasta_title}**\n{copypasta_to_send}")
         
         elif arg in copypasta_titles:
             if arg == "Petersonian":
