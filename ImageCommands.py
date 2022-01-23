@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 import textwrap
 from string import ascii_letters
 import io
+from pilmoji import Pilmoji
 
 load_dotenv()
 
@@ -234,7 +235,8 @@ class ImageCommands(commands.Cog):
         color = (255, 255, 255)
         text_image = Image.new(mode, size, color)
         
-        writing_text = ImageDraw.Draw(text_image)
+        #writing_text = ImageDraw.Draw(text_image)
+        writing_text = Pilmoji(text_image)
         writing_text.text(xy=(0, 0), text=text, font=font, fill='#000000')
         
         
