@@ -223,7 +223,7 @@ class ImageCommands(commands.Cog):
         # Translate this average length into a character count
         max_char_count = int(1050/ avg_char_width)
         # Create a wrapped text object using scaled character count
-        text = textwrap.fill(text=text, width=max_char_count)
+        text = textwrap.fill(text=text, width=max_char_count).replace("\\n", "\n")
         
         text_image_y_dimension = 100
         for i in text:
