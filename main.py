@@ -128,6 +128,13 @@ async def on_message(message):
             elif "goodnight" in message.content.lower():
                 await message.channel.send(f"<#{message.channel.id}> is offline")
     
+    if message.content.lower() == "i live in canada":
+        prev_msg =await message.channel.history(limit = 2).flatten()
+        if prev_msg[1].content.lower() == "wrong":
+            await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
+    
+    
+    
     await bot.process_commands(message)    
  
 
