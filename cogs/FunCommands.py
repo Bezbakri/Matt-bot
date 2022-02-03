@@ -23,6 +23,8 @@ async def is_owner(ctx):
     return ctx.author.id == 316125981725425666        
         
 class FunCommands(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
 
 
     copypasta_help = f"""Gives you a random copyapsta from the list of stored copypastas.
@@ -274,4 +276,5 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
     async def bruh(self, ctx):
         await ctx.channel.send("Bruh I'm a furry bottom who watches vtubers")
 
-    
+def setup(bot):
+    bot.add_cog(FunCommands(bot))

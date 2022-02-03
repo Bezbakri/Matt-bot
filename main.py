@@ -11,10 +11,9 @@ import pytz
 import os
 from dotenv import load_dotenv
 from nextcord.ext import commands
-from FunCommands import FunCommands
+import sys, traceback
 import prefix
-from ImageCommands import ImageCommands
-from error_handling import ErrorHandler
+
 
 load_dotenv()
 
@@ -31,11 +30,14 @@ async def on_ready():
     start_time = datetime.now(GMT)
     global display_time
     display_time = start_time.strftime("%Y/%m/%d %H:%M:%S")
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"with {len(bot.guilds)} war criminal bunkers"))
     channel = bot.get_channel(924331444661284914)
-    for i in coglist:
+    await channel.send("I am alive")
+    '''
+    for i in initial_extensions:
         bot.add_cog(i)
-    await channel.send(f"Added {len(coglist)} cogs {coglist}")    
-
+    await channel.send(f"Added {len(initial_extensions)} cogs {initial_extensions})"'''
+       
 
 
 
@@ -61,14 +63,15 @@ async def finally_work_pls(ctx):
     await ctx.channel.send("pong")
     
 
-coglist = [FunCommands(), ImageCommands(), ErrorHandler()]
+initial_extensions = ['cogs.FunCommands', 'cogs.ImageCommands', 'cogs.error_handling']
 
 
 
-import sys
+if __name__ == '__main__':
+    for extension in initial_extensions:
+        bot.load_extension(extension)
 
-def str_to_class(classname):
-    return getattr(sys.modules[__name__], classname)
+
 
 
 
@@ -77,15 +80,15 @@ async def is_owner(ctx):
 
 @bot.command(
     name = "addcog",
-    help = f"Adding cogs. List of cogs is: {coglist}",
+    help = f"Adding cogs. List of cogs is: {initial_extensions}",
     brief = "command for adding cogs"
 )
 @commands.check(is_owner)
 async def adding_pog(ctx, cog):
     if cog.lower() == "all":
-        for i in coglist:
+        for i in initial_extensions:
             bot.add_cog(i)
-        await ctx.channel.send(f"Added {len(coglist)} cogs {coglist}")
+        await ctx.channel.send(f"Added {len(initial_extensions)} cogs {initial_extensions}")
     '''else:
         bot.add_cog(str_to_class(cog))
         await ctx.channel.send(f"Added 1 cog {cog}")'''
@@ -93,7 +96,7 @@ async def adding_pog(ctx, cog):
 
 @bot.command(
     name = "removecog",
-    help = f"Removing cogs. List of cogs is: {coglist}",
+    help = f"Removing cogs. List of cogs is: {initial_extensions}",
     brief = "command for removing cogs"
 )
 @commands.check(is_owner)

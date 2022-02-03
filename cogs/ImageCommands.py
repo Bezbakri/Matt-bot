@@ -60,7 +60,8 @@ def retweets_and_likes_generator(lower_limit, upper_limit):
     
 
 class ImageCommands(commands.Cog):
-    
+    def __init__(self, bot):
+        self.bot = bot
     
     ascii_help = """Returns ascii image of the argument.
     Usage:
@@ -351,3 +352,6 @@ class ImageCommands(commands.Cog):
             f = discord.File(fh, filename = "Trump_says.png")
         await ctx.channel.send(file = f)
         '''
+
+def setup(bot):
+    bot.add_cog(ImageCommands(bot))

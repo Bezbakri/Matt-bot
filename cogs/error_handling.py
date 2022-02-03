@@ -28,8 +28,8 @@ class UnexpectedError(OuranosCommandError):
 
 class ErrorHandler(commands.Cog):
     """A cog that adds some basic command error handling to your bot."""
-    '''def __init__(self, bot):
-        self.bot = bot'''
+    def __init__(self, bot):
+        self.bot = bot
 
     async def _respond_to_error(self, ctx, error):
         """Function containing my normal error responses for command errors."""
@@ -85,5 +85,5 @@ class ErrorHandler(commands.Cog):
             pass
 
 
-'''def setup(bot):
-    bot.add_command(ErrorHandler(bot))'''
+def setup(bot):
+    bot.add_cog(ErrorHandler(bot))
