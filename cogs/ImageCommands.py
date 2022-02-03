@@ -301,7 +301,7 @@ class ImageCommands(commands.Cog):
         
         
         #old version of doing this shit
-        #kepping it just because
+        #keeping it just because
         
         '''
         
