@@ -46,6 +46,6 @@ class AutoResponder(commands.Cog):
         
         
         
-        await self.bot.process_commands(message)    
+        #await self.bot.process_commands(message)    
 def setup(bot):
     bot.add_cog(AutoResponder(bot))
