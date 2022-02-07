@@ -11,4 +11,4 @@ Also, the bot is written in nextcord.
 
 <img src = "https://github.com/Bezbakri/Matt-bot/blob/main/assets/trump_tweet_example.png?raw=true" alt = "trump tweet example">
 
-[The file in question](cogs/ImageCommands.py) (go to line 204)
+[The file in question](cogs/ImageCommands.py#L204) (go to line 204)
