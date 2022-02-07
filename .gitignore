@@ -154,3 +154,4 @@ cython_debug/
 #stuff on my laptop
 assets/copypastas.txt
 assets/trump_tweet_template.png
+testing_trump_tweet.py
