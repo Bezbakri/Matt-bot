@@ -29,7 +29,8 @@ bot = commands.Bot(command_prefix = prefix.prefix)
 initial_extensions = ['cogs.FunCommands', 
                       'cogs.ImageCommands', 
                       'cogs.error_handling', 
-                      'cogs.AutoResponder']
+                      'cogs.AutoResponder',
+                      'cogs.owner']
 
 
 
@@ -78,51 +79,6 @@ async def pls_respond(ctx):
 async def finally_work_pls(ctx):
     await ctx.channel.send("pong")
     
-
-
-
-
-
-
-
-async def is_owner(ctx):
-    return ctx.author.id == 316125981725425666
-
-@bot.command(
-    name = "addcog",
-    help = f"Adding cogs. List of cogs is: {initial_extensions}",
-    brief = "command for adding cogs"
-)
-@commands.check(is_owner)
-async def adding_pog(ctx, cog):
-    if cog.lower() == "all":
-        for i in initial_extensions:
-            bot.add_cog(i)
-        await ctx.channel.send(f"Added {len(initial_extensions)} cogs {initial_extensions}")
-    '''else:
-        bot.add_cog(str_to_class(cog))
-        await ctx.channel.send(f"Added 1 cog {cog}")'''
-
-
-@bot.command(
-    name = "removecog",
-    help = f"Removing cogs. List of cogs is: {initial_extensions}",
-    brief = "command for removing cogs"
-)
-@commands.check(is_owner)
-async def removing_pog(ctx, cog):
-    
-    bot.remove_cog(cog)
-    await ctx.channel.send(f"Removed {cog}")
-    '''else:
-        bot.add_cog(str_to_class(cog))
-        await ctx.channel.send(f"Added 1 cog {cog}")'''
-
-
-
- 
-
-
 
 
     

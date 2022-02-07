@@ -276,5 +276,20 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
     async def bruh(self, ctx):
         await ctx.channel.send("Bruh I'm a furry bottom who watches vtubers")
 
+    @commands.command(
+     name = "send",   
+     hidden = True
+  )
+    
+    async def troll_from_another_channel(self, ctx, channel_from_user, *message):
+        """Sends a message to the specified channel from another channel"""
+        message = " ".join(message)
+        channel_from_user = channel_from_user.lstrip("<#")
+        channel_from_user = channel_from_user.rstrip(">")
+        channel_to_send = self.bot.get_channel(int(channel_from_user))
+        await channel_to_send.send(message)
+    
+    
+    
 def setup(bot):
     bot.add_cog(FunCommands(bot))
