@@ -77,6 +77,9 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         
         
         
+        
+        
+        
         copypasta_titles = []
         copypastas = "assets/copypastas.csv"
         
@@ -87,6 +90,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
                     copypasta_titles.append(row[0])
         copypasta_titles.pop(0)
         number_of_copypastas = len(copypasta_titles)
+        list_of_copypastas = ", ".join(copypasta_titles)
         #testing to see if my csv method worked
         '''copypasta_titles_string = ""
         
@@ -95,6 +99,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
             copypasta_titles_string += ", "
         await ctx.channel.send(f"List of copypastas is {copypasta_titles_string}")'''
         
+        embed_list_of_copypastas = discord.Embed(title = f"All copypastas saved ({number_of_copypastas})", description=list_of_copypastas, color= embed_color)
         
         #real code
         
@@ -127,8 +132,8 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
                 await ctx.channel.send(copypasta_to_send.replace("\\n", "\n"))
         
         elif arg.lower() == "list":
-            list_of_copypastas = ", ".join(copypasta_titles)
-            await ctx.channel.send(f"List of copypastas is: {list_of_copypastas}")
+            
+            await ctx.channel.send(embed = embed_list_of_copypastas)
         
         elif arg.lower() == "count":
             copypasta_count = "There are currently " + str(number_of_copypastas) + " copypastas stored in my library. Dm Bezbakri#2637 for more copypastas."
