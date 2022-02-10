@@ -277,10 +277,9 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         await ctx.channel.send("Bruh I'm a furry bottom who watches vtubers")
 
     @commands.command(
-     name = "send",   
-     hidden = True
+     name = "send"
   )
-    
+    @commands.has_permissions(manage_messages = True)
     async def troll_from_another_channel(self, ctx, channel_from_user, *message):
         """Sends a message to the specified channel from another channel"""
         message = " ".join(message)
