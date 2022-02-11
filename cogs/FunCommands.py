@@ -25,14 +25,15 @@ async def is_owner(ctx):
 class FunCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-
-    copypasta_help = f"""Gives you a random copyapsta from the list of stored copypastas.
-    Usage:
-        {prefix.prefix}copypasta random    Gives you a random copypasta
-        {prefix.prefix}copypasta [title]    Gives you a copypasta with that title.
-        {prefix.prefix}copypasta list    Shows the titles of all the copypastas.
-        {prefix.prefix}copypasta count    Shows the number of available copypastas.
+        
+    
+    
+    copypasta_help = """Gives you a random copyapsta from the list of stored copypastas.
+    Usage (with default prefix):
+        $copypasta random    Gives you a random copypasta
+        $copypasta [title]    Gives you a copypasta with that title.
+        $copypasta list    Shows the titles of all the copypastas.
+        $copypasta count    Shows the number of available copypastas.
     """
     
     

@@ -9,6 +9,7 @@ import nextcord as discord
 import os
 from nextcord.ext import commands
 from dotenv import load_dotenv
+import prefix
 
 load_dotenv()
 BOT_USER_ID=os.getenv("BOT_USER_ID")
@@ -44,8 +45,11 @@ class AutoResponder(commands.Cog):
             if prev_msg[1].content.lower() == "wrong":
                 await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
         mention = f"<@!{BOT_USER_ID}>"
-        if mention in message.content and "fuck you" in message.content.lower():
-            await message.channel.send(f"Fuck you {message.author.mention}")
+        if mention in message.content:
+            if "fuck you" in message.content.lower():
+                await message.channel.send(f"Fuck you {message.author.mention}")
+            else:
+                await message.channel.send(f"Hello, my prefix for this server is ``{prefix.return_prefix(message.guild)}``")
         
         
         #await self.bot.process_commands(message)    

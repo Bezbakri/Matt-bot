@@ -27,7 +27,8 @@ cse_token = os.getenv("SEARCH_ENGINE_ID")
 
 
 resource = build("customsearch", 'v1', developerKey=api_key).cse()
-    
+
+
 
 def member_role_color(member):
     for role in reversed(member.roles): # go top to bottom
@@ -62,6 +63,8 @@ def retweets_and_likes_generator(lower_limit, upper_limit):
 class ImageCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        
+    
     
     ascii_help = """Returns ascii image of the argument.
     Usage:
@@ -72,7 +75,7 @@ class ImageCommands(commands.Cog):
     
     """
     
-    
+        
     
     
     @commands.command(
@@ -163,11 +166,12 @@ class ImageCommands(commands.Cog):
     @commands.command(
         name = "image",
         aliases = ["img", "i"],
-        help = f"Searches for images. Aliases are {prefix.prefix}img and {prefix.prefix}i.",
+        help = f"Searches for images. Aliases are img and i.",
         brief = "Image search command"
     )
     
     async def only_100_queries_a_day(self, ctx, *search_query):
+        
         
         embed_color = member_role_color(ctx.author)
         

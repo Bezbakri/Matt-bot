@@ -13,6 +13,9 @@ class owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 #won't show up for non-owners lol
+    
+    
+
     @commands.command(name='load')
     @commands.is_owner()
     async def loading(self, ctx, *, cog: str):

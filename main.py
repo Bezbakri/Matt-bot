@@ -13,15 +13,23 @@ from dotenv import load_dotenv
 from nextcord.ext import commands
 import sys, traceback
 import prefix
+import json
 
 
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
+def get_prefix(client, message):
+    guild = message.guild
+    if guild == None:
+        return "$"
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+    return prefixes.get(str(guild.id), "$")
 
 
-bot = commands.Bot(command_prefix = prefix.prefix)
+bot = commands.AutoShardedBot(command_prefix = (get_prefix), )
 
 
 
@@ -78,8 +86,39 @@ async def pls_respond(ctx):
 )
 async def finally_work_pls(ctx):
     await ctx.channel.send("pong")
-    
 
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def setprefix(ctx, prefix):
+    """Command for setting a prefix
+    Ping the bot for the current prefix"""
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+        prefixes[str(ctx.guild.id)] = prefix
+        with open('prefixes.json', 'w') as f:
+            json.dump(prefixes, f, indent=4)
+            await ctx.send(f'Prefix is now: {prefix}')
+            bot.unload_extension("cogs.AutoResponder")
+            bot.load_extension("cogs.AutoResponder")
+
+@bot.event
+async def on_guild_join(guild):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+
+    prefixes[str(guild.id)] = "$"
+    with open("prefixes.json", "w") as f:
+        json.dump(prefixes, f, indent=4)
+
+
+@bot.event
+async def on_guild_remove(guild):
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+
+    prefixes.pop(str(guild.id))
+    with open("prefixes.json", "w") as f:
+        json.dump(prefixes, f, indent=4)
 
     
 bot.run(DISCORD_TOKEN)
