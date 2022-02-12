@@ -6,13 +6,12 @@ Created on Sat Dec 25 18:42:42 2021
 """
 
 import nextcord as discord
-from datetime import datetime
+from datetime import datetime, timezone
 import pytz
 import os
 from dotenv import load_dotenv
 from nextcord.ext import commands
 import sys, traceback
-import prefix
 import json
 
 
@@ -56,6 +55,9 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
     GMT = pytz.timezone("Etc/GMT")
     start_time = datetime.now(GMT)
+    utc_start_time = start_time.replace(tzinfo=timezone.utc)
+    global utc_start_timestamp
+    utc_start_timestamp = str(utc_start_time.timestamp()).partition(".")[0]
     global display_time
     display_time = start_time.strftime("%Y/%m/%d %H:%M:%S")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"with {len(bot.guilds)} war criminal bunkers"))
@@ -74,7 +76,7 @@ async def on_ready():
 )        
 async def pls_respond(ctx):
     
-    await ctx.channel.send(f"<:20hype:924951455343968296> Meheheheh. Running since {display_time} GMT.")
+    await ctx.channel.send(f"<:20hype:924951455343968296> Meheheheh. Running since {display_time} GMT (<t:{utc_start_timestamp}:R> or <t:{utc_start_timestamp}>).")
     
 
     
@@ -85,7 +87,7 @@ async def pls_respond(ctx):
     brief = "pong"
 )
 async def finally_work_pls(ctx):
-    await ctx.channel.send("pong")
+    await ctx.channel.send(f"pong :ping_pong:\nMy latency is **{round(bot.latency*1000)} ms**")
 
 @bot.command()
 @commands.has_permissions(administrator=True)

@@ -44,8 +44,9 @@ class AutoResponder(commands.Cog):
             prev_msg =await message.channel.history(limit = 2).flatten()
             if prev_msg[1].content.lower() == "wrong":
                 await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
-        mention = f"<@!{BOT_USER_ID}>"
-        if mention in message.content:
+        mention_comp = f"<@!{BOT_USER_ID}>"
+        mention_mobile = f"<@{BOT_USER_ID}>"
+        if mention_comp in message.content or mention_mobile in message.content:
             if "fuck you" in message.content.lower():
                 await message.channel.send(f"Fuck you {message.author.mention}")
             else:
