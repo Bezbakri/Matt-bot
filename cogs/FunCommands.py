@@ -293,6 +293,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         channel_from_user = channel_from_user.rstrip(">")
         channel_to_send = self.bot.get_channel(int(channel_from_user))
         await channel_to_send.send(message)
+        await ctx.channel.send(f"Sent message to #{channel_to_send}")
     
     
     
