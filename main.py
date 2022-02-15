@@ -62,7 +62,7 @@ async def on_ready():
     display_time = start_time.strftime("%Y/%m/%d %H:%M:%S")
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"with {len(bot.guilds)} war criminal bunkers"))
     channel = bot.get_channel(924331444661284914)
-    await channel.send("I am alive")
+    await channel.send("I am alive <:hellofriends:943005593566838794>")
     await channel.send(f"Added {cogs_added} out of {len(initial_extensions)} cogs")
        
 

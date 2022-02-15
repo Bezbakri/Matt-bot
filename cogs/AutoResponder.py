@@ -14,15 +14,24 @@ import prefix
 load_dotenv()
 BOT_USER_ID=os.getenv("BOT_USER_ID")
 
+
+
 class AutoResponder(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.bot.bad_words_list = ["kys", "kill yourself"]
+        self.bot.hello_friends_emoji = "<:hellofriends:943005593566838794>"
         
     @commands.Cog.listener()
     async def on_message(self,message):
         if message.author == BOT_USER_ID:
             return
-        
+        for i in self.bot.bad_words_list:
+            if i in message.content.lower():
+                await message.channel.send("you should love yourself now")
+                return
+        if "hello friends" in message.content.lower():
+            await message.add_reaction(self.bot.hello_friends_emoji)
         if message.author.id == 316125981725425666:
             if "gaymers" in message.content.lower():
                 if "morning" in message.content.lower():
