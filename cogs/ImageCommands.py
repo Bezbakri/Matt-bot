@@ -94,10 +94,11 @@ class ImageCommands(commands.Cog):
         
         
         try:
+            if not image_link:
+                if len(ctx.message.attachments) > 0:
+                    image_link = ctx.message.attachments[0].url
             if image_link.lower() == "me":
                 image_link = ctx.author.avatar.url
-            elif len(ctx.message.attachments) > 0:
-                image_link = ctx.message.attachments[0].url
             response = requests.get(image_link, stream=True).raw
             img = Image.open(response)
             #fh = open(image_name, "wb")
@@ -166,7 +167,7 @@ class ImageCommands(commands.Cog):
     @commands.command(
         name = "image",
         aliases = ["img", "i"],
-        help = f"Searches for images. Aliases are img and i.",
+        help = "Searches for images. Aliases are img and i.",
         brief = "Image search command"
     )
     
