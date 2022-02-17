@@ -147,10 +147,7 @@ class ImageCommands(commands.Cog):
             
         except:
             await ctx.channel.send("fucker gimme an image link")
-            
-        
-        
-        
+       
         
     @commands.command(
         name = "backtoformula",
@@ -200,8 +197,6 @@ class ImageCommands(commands.Cog):
         embed.set_image(url = image_link)
         embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
         embed.timestamp = datetime.utcnow()
-        
-        
         
         await ctx.channel.send(embed = embed)
         
