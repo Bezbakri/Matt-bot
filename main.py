@@ -6,6 +6,7 @@ Created on Sat Dec 25 18:42:42 2021
 """
 
 import nextcord as discord
+from nextcord import Interaction
 from datetime import datetime, timezone
 import pytz
 import os
@@ -18,6 +19,7 @@ import json
 load_dotenv()
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
+TEST_SERVER_ID = os.getenv("TEST_SERVER_ID") #for testing slash commands
 
 def get_prefix(client, message):
     guild = message.guild
@@ -27,9 +29,11 @@ def get_prefix(client, message):
         prefixes = json.load(f)
     return prefixes.get(str(guild.id), "$")
 
+intents = discord.Intents.default()
+intents.members = True
 
-bot = commands.AutoShardedBot(command_prefix = (get_prefix), )
 
+bot = commands.Bot(command_prefix = (get_prefix), intents = intents)
 
 
 
@@ -88,6 +92,11 @@ async def pls_respond(ctx):
 )
 async def finally_work_pls(ctx):
     await ctx.channel.send(f"pong :ping_pong:\nMy latency is **{round(bot.latency*1000)} ms**")
+
+@bot.slash_command(name = "peeng", description = "Pongs back at ya. That's all.", guild_ids = [TEST_SERVER_ID])
+async def slash_test(interaction:Interaction):
+    await interaction.response.send_message(f"pong :ping_pong:\nMy latency is **{round(bot.latency*1000)} ms**")
+
 
 @bot.command()
 @commands.has_permissions(administrator=True)

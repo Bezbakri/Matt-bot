@@ -5,8 +5,8 @@ Created on Wed Dec 29 21:43:23 2021
 @author: bezbakri
 """
 
-import prefix
 import nextcord as discord
+from nextcord import interactions
 from nextcord.ext import commands
 import requests
 from PIL import Image, ImageDraw, ImageFont
@@ -63,6 +63,7 @@ def retweets_and_likes_generator(lower_limit, upper_limit):
 class ImageCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.count = 0
         
     
     
@@ -352,6 +353,9 @@ class ImageCommands(commands.Cog):
             f = discord.File(fh, filename = "Trump_says.png")
         await ctx.channel.send(file = f)
         '''
+        @discord.slash_command(name = "meme")
+        async def slash_command_cog(self, interaction: interactions):
+            await interaction.response.send_message("Hello I am a slash command in a cog!")
 
 def setup(bot):
     bot.add_cog(ImageCommands(bot))
