@@ -6,7 +6,7 @@ Created on Wed Dec 29 21:43:23 2021
 """
 
 import nextcord as discord
-from nextcord import interactions
+from nextcord import Interaction
 from nextcord.ext import commands
 import requests
 from PIL import Image, ImageDraw, ImageFont
@@ -353,9 +353,84 @@ class ImageCommands(commands.Cog):
             f = discord.File(fh, filename = "Trump_says.png")
         await ctx.channel.send(file = f)
         '''
-        @discord.slash_command(name = "meme")
-        async def slash_command_cog(self, interaction: interactions):
-            await interaction.response.send_message("Hello I am a slash command in a cog!")
+        
+        #slash version of trump command
+        @discord.slash_command(name = "trumptwit", description = "Trump tweets whatever you say.")
+        async def slash_command_cog(self, interaction:Interaction, *, text = None):
+            text = "".join(text)
+                        
+            font = ImageFont.truetype("assets/HelveticaNeueLight.ttf", size = 58)
+            
+            # Calculate the average length of a single character of our font.
+            # Note: this takes into account the specific font and font size.
+            avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+            # Translate this average length into a character count
+            max_char_count = int(1050/ avg_char_width)
+            # Create a wrapped text object using scaled character count
+            text = textwrap.fill(text=text, width=max_char_count).replace("\\n", "\n")
+            
+            text_image_y_dimension = 100
+            for i in text:
+                if i == "\n":
+                    text_image_y_dimension+=60
+            
+            mode = "RGB"
+            size = (1094, text_image_y_dimension)
+            color = (255, 255, 255)
+            text_image = Image.new(mode, size, color)
+            
+            #writing_text = ImageDraw.Draw(text_image)
+            writing_text = Pilmoji(text_image)
+            writing_text.text(xy=(0, 0), text=text, font=font, fill='#000000')
+            
+            
+            
+            
+            trump_tweet_header_path = "assets/trump_tweet_header.png"
+            trump_tweet_footer_path = "assets/trump_tweet_footer.png"
+            
+            
+            trump_tweet_footer = Image.open(trump_tweet_footer_path)
+            font_ratio = ImageFont.truetype("assets/HelveticaNeueBold.ttf", size = 36)
+            font_datestamp = ImageFont.truetype("assets/ArialMdm.ttf", size = 26)
+            retweets = retweets_and_likes_generator(8000, 100000)
+            likes = retweets_and_likes_generator(10000, 250000)
+            trump_tweet_ratio = ImageDraw.Draw(trump_tweet_footer)
+            
+            #the retweets-likes
+            trump_tweet_ratio.text(xy = (42, 45), text = retweets, font = font_ratio, fill = "#438DCB")
+            trump_tweet_ratio.text(xy = (210, 45), text = likes, font = font_ratio, fill = "#438DCB")
+            
+            
+            
+            #the datestamp
+            
+            timestamp, datestamp = date_generator()
+            trump_tweet_ratio.text(xy = (42, 134), text = timestamp, font = font_datestamp, fill = "#6E777E")
+            trump_tweet_ratio.text(xy = (170, 134), text = datestamp, font = font_datestamp, fill = "#6E777E")
+            
+            
+            trump_tweet_header = Image.open(trump_tweet_header_path)
+            
+            
+            
+            trump_tweet_y_dimension = text_image_y_dimension + 338
+            mode = "RGB"
+            size = (1200, trump_tweet_y_dimension)
+            color = (255, 255, 255)
+            trump_tweet = Image.new(mode, size, color)
+            
+            trump_tweet.paste(trump_tweet_header)
+            trump_tweet.paste(text_image, (42, 150))
+            trump_tweet.paste(trump_tweet_footer, (0, text_image_y_dimension+151))
+            
+            
+            
+            
+            with io.BytesIO() as image_binary:
+                 trump_tweet.save(image_binary, 'PNG')
+                 image_binary.seek(0)
+                 await interaction.response.send_message(file=discord.File(fp=image_binary, filename='trump_says.png'))
 
 def setup(bot):
     bot.add_cog(ImageCommands(bot))

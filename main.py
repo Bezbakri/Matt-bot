@@ -93,7 +93,7 @@ async def pls_respond(ctx):
 async def finally_work_pls(ctx):
     await ctx.channel.send(f"pong :ping_pong:\nMy latency is **{round(bot.latency*1000)} ms**")
 
-@bot.slash_command(name = "peeng", description = "Pongs back at ya. That's all.", guild_ids = [TEST_SERVER_ID])
+@bot.slash_command(name = "peeng", description = "Pongs back at ya. That's all.")
 async def slash_test(interaction:Interaction):
     await interaction.response.send_message(f"pong :ping_pong:\nMy latency is **{round(bot.latency*1000)} ms**")
 
