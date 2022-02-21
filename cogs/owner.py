@@ -8,7 +8,6 @@ Created on Mon Feb  7 08:57:09 2022
 import nextcord as discord
 from nextcord.ext import commands
 
-
 class owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

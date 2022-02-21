@@ -6,7 +6,7 @@ Created on Sat Dec 25 18:42:42 2021
 """
 
 import nextcord as discord
-from nextcord import Interaction
+from nextcord import Interaction, Message
 from datetime import datetime, timezone
 import pytz
 import os
@@ -97,6 +97,9 @@ async def finally_work_pls(ctx):
 async def slash_test(interaction:Interaction):
     await interaction.response.send_message(f"pong :ping_pong:\nMy latency is **{round(bot.latency*1000)} ms**")
 
+@bot.message_command(name = "say")
+async def say(interaction: Interaction, message: str):
+    await interaction.response.send_message(message.content)
 
 @bot.command()
 @commands.has_permissions(administrator=True)

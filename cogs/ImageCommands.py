@@ -6,7 +6,7 @@ Created on Wed Dec 29 21:43:23 2021
 """
 
 import nextcord as discord
-from nextcord import Interaction
+from nextcord import Interaction, SlashOption
 from nextcord.ext import commands
 import requests
 from PIL import Image, ImageDraw, ImageFont
@@ -24,7 +24,7 @@ load_dotenv()
 
 api_key = os.getenv("GOOGLE_CUSTOM_SEARCH_API_TOKEN")
 cse_token = os.getenv("SEARCH_ENGINE_ID")
-
+TEST_SERVER_ID = os.getenv("TEST_SERVER_ID") #for testing slash commands
 
 resource = build("customsearch", 'v1', developerKey=api_key).cse()
 
@@ -355,9 +355,12 @@ class ImageCommands(commands.Cog):
         '''
         
         #slash version of trump command
-        @discord.slash_command(name = "trumptwit", description = "Trump tweets whatever you say.")
-        async def slash_command_cog(self, interaction:Interaction, *, text = None):
-            text = "".join(text)
+        @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
+        async def slash_command_cog(self, 
+                                    interaction:Interaction,
+                                    text:str = SlashOption(name = "text arguments", description= "whatever trump has to say")
+                                    ):
+            
                         
             font = ImageFont.truetype("assets/HelveticaNeueLight.ttf", size = 58)
             
@@ -431,6 +434,7 @@ class ImageCommands(commands.Cog):
                  trump_tweet.save(image_binary, 'PNG')
                  image_binary.seek(0)
                  await interaction.response.send_message(file=discord.File(fp=image_binary, filename='trump_says.png'))
+
 
 def setup(bot):
     bot.add_cog(ImageCommands(bot))
