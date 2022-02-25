@@ -27,9 +27,9 @@ def rest_of_message_function(message):
     elif message.startswith("Im"):
         return message.lstrip("Im")
     elif message.startswith("I am"):
-        return message.lstrip("I am")
+        return message.lstrip("I a").lstrip("m")
     elif message.startswith("i am"):
-        return message.lstrip("i am")
+        return message.lstrip("i a").lstrip("m")
 
 class AutoResponder(commands.Cog):
     def __init__(self, bot):
@@ -38,6 +38,7 @@ class AutoResponder(commands.Cog):
         self.bot.hello_friends_emoji = "<:hellofriends:943005593566838794>"
         self.bot.upvote = "<:upvote:944219796554252429>"
         self.bot.downvote = "<:downvote:944219797162459136>"
+        
         
     @commands.Cog.listener()
     async def on_message(self,message):
@@ -76,7 +77,9 @@ class AutoResponder(commands.Cog):
                     await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
             if start_line_dad_expression.match(message.content, 0, 4):
                 rest_of_message = rest_of_message_function(message.content).strip()
-                await message.reply(f"Hi {rest_of_message}, \nI'm Matt.")
+                display_name = await message.guild.fetch_member(BOT_USER_ID)
+                display_name = display_name.display_name
+                await message.reply(f"Hi {rest_of_message}, \nI'm {display_name}.")
             mention_comp = f"<@!{BOT_USER_ID}>"
             mention_mobile = f"<@{BOT_USER_ID}>"
             if mention_comp in message.content or mention_mobile in message.content:
