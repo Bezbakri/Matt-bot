@@ -97,7 +97,7 @@ async def finally_work_pls(ctx):
 async def slash_test(interaction:Interaction):
     await interaction.response.send_message(f"pong :ping_pong:\nMy latency is **{round(bot.latency*1000)} ms**")
 
-@bot.message_command(name = "say")
+@bot.slash_command(name = "say")
 async def say(interaction: Interaction, message: str):
     await interaction.response.send_message(message.content)
 

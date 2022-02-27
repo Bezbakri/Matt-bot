@@ -10,6 +10,7 @@ from nextcord.ext import commands
 import prefix
 from datetime import datetime
 import csv
+import asyncio
 
 def member_role_color(member):
     for role in reversed(member.roles): # go top to bottom
@@ -18,6 +19,10 @@ def member_role_color(member):
         
     return 0xEF8A01
 
+def talking_ben_simulator():
+    response_list = ["Yes.", "No.", "**No.**", "Hohoho!", "*Hohoho!*", "Bleugh!"]
+    choice = random.randint(0,5)
+    return response_list[choice]
 
 async def is_owner(ctx):
     return ctx.author.id == 316125981725425666        
@@ -294,6 +299,40 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         channel_to_send = self.bot.get_channel(int(channel_from_user))
         await channel_to_send.send(message)
         await ctx.channel.send(f"Sent message to #{channel_to_send}")
+        
+    
+    @commands.command(
+        name = "telephone",
+        help = "Talk to Mattbot. Similar to Talking Ben's phone calls. \
+            \n$stop (default prefix) stops the call",
+        brief = "Talk to Mattbot. Similar to Talking Ben's phone calls."
+    )
+    async def hohoho(self, ctx):
+        await ctx.channel.send("*Connecting to Mattbot...*")
+        await ctx.channel.send("sup")
+        while True:
+            
+            try:
+                msg = await self.bot.wait_for("message", timeout = 60.0)
+            except asyncio.TimeoutError:
+                await ctx.channel.send("No response, call ended.")
+                break
+            
+            if msg.content != f"{prefix.return_prefix(ctx.guild)}stop" and msg.channel == ctx.channel:
+                if msg.author == self.bot.user:
+                    return
+                chance = random.randint(0,50)
+                if chance in range(13):
+                    await ctx.channel.send("*Matt has hung up on you!*")
+                    break
+                else:
+                    response = talking_ben_simulator()
+                    await ctx.channel.send(response)
+            else:
+                await ctx.channel.send("Call stopped.")
+                break
+            
+            
     
     
     
