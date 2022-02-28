@@ -79,8 +79,7 @@ class ImageCommands(commands.Cog):
     async def get_asset_from_user(self, ctx, image_link = None, allow_static_image = True, allow_gif = False):
          
         try:
-            if not image_link:
-                if len(ctx.message.attachments) > 0:
+            if len(ctx.message.attachments) > 0:
                     image_link = ctx.message.attachments[0].url
             if image_link.lower() == "me":
                 image_link = ctx.author.avatar.url
