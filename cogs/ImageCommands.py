@@ -76,7 +76,32 @@ class ImageCommands(commands.Cog):
     
     """
     
-        
+    async def get_asset_from_user(self, ctx, image_link = None, allow_static_image = True, allow_gif = False):
+         
+        try:
+            if not image_link:
+                if len(ctx.message.attachments) > 0:
+                    image_link = ctx.message.attachments[0].url
+            if image_link.lower() == "me":
+                image_link = ctx.author.avatar.url
+            response = requests.get(image_link, stream=True).raw
+            img = Image.open(response)
+            #fh = open(image_name, "wb")
+            #fh.write(response.content)
+            #fh.close()
+            await ctx.channel.send("Successful image")
+            if allow_gif == False and img.format == "GIF":
+                mypalette = img.getpalette()
+                img.putpalette(mypalette)
+                static_img = Image.new("RGBA", img.size)
+                static_img.paste(img)
+                return static_img
+                    
+                
+            else:
+                return img
+        except:
+            await ctx.channel.send("fucker gimme an image link")
     
     
     @commands.command(
@@ -93,61 +118,48 @@ class ImageCommands(commands.Cog):
         #Note to self: with rev's thing AND MY SHITTY ERROR HANDLING SKILLS
         
         
+       
+        #now image manipulation, my most hated part
+        #img = Image.open(image_name)
+        img = await self.get_asset_from_user(ctx, image_link)
         
+        #resizing
+        width, height = img.size
+        aspect_ratio = height/width #RATIO LOL
+        new_width = 52
+        new_height = aspect_ratio * new_width *0.5
+        img = img.resize((new_width, int(new_height)))
+        #await ctx.channel.send(img.size)
+        
+        #image to grayscale (image takes an L)
+        
+        img = img.convert("L")
+        pixels = img.getdata()
+        #await ctx.channel.send(pixels)
+        
+        
+        #replace pixels with ascii character
+        ASCII_CHARS = ["@", "#", "$", "%", "?", "*", "+", ";", ":", ",", "."]
+        
+        new_pixels = [ASCII_CHARS[pixel//25] for pixel in pixels]
+        new_pixels = "".join(new_pixels)
+        
+        
+        #now make them into a list of strings with length = new width
+        new_pixels_count = len(new_pixels)
+        ascii_image = [new_pixels[index:index + new_width] for index in range(0, new_pixels_count, new_width)]
+        ascii_image = "\n".join(ascii_image)
         try:
-            if not image_link:
-                if len(ctx.message.attachments) > 0:
-                    image_link = ctx.message.attachments[0].url
-            if image_link.lower() == "me":
-                image_link = ctx.author.avatar.url
-            response = requests.get(image_link, stream=True).raw
-            img = Image.open(response)
-            #fh = open(image_name, "wb")
-            #fh.write(response.content)
-            #fh.close()
-            await ctx.channel.send("Successful image")
-            #now image manipulation, my most hated part
-            #img = Image.open(image_name)
-            
-            
-            #resizing
-            width, height = img.size
-            aspect_ratio = height/width #RATIO LOL
-            new_width = 52
-            new_height = aspect_ratio * new_width *0.5
-            img = img.resize((new_width, int(new_height)))
-            #await ctx.channel.send(img.size)
-            
-            #image to grayscale (image takes an L)
-            
-            img = img.convert("L")
-            pixels = img.getdata()
-            #await ctx.channel.send(pixels)
-            
-            
-            #replace pixels with ascii character
-            ASCII_CHARS = ["@", "#", "$", "%", "?", "*", "+", ";", ":", ",", "."]
-            
-            new_pixels = [ASCII_CHARS[pixel//25] for pixel in pixels]
-            new_pixels = "".join(new_pixels)
-            
-            
-            #now make them into a list of strings with length = new width
-            new_pixels_count = len(new_pixels)
-            ascii_image = [new_pixels[index:index + new_width] for index in range(0, new_pixels_count, new_width)]
-            ascii_image = "\n".join(ascii_image)
-            try:
-            
-                #send it
-                #with open("assets/ascii_art.txt", "w") as f:
-                    #f.write(ascii_image)
-                await ctx.channel.send(f"```{ascii_image}```")
-            except:
-                await ctx.channel.send("Discord is being a poopoohead and won't let me send the final product.")
         
-            
+            #send it
+            #with open("assets/ascii_art.txt", "w") as f:
+                #f.write(ascii_image)
+            await ctx.channel.send(f"```{ascii_image}```")
         except:
-            await ctx.channel.send("fucker gimme an image link")
+            await ctx.channel.send("Discord is being a poopoohead and won't let me send the final product.")
+    
+            
+        
        
         
     @commands.command(
@@ -354,86 +366,130 @@ class ImageCommands(commands.Cog):
         await ctx.channel.send(file = f)
         '''
         
-        #slash version of trump command
-        @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
-        async def slash_command_cog(self, 
-                                    interaction:Interaction,
-                                    text:str = SlashOption(name = "text arguments", description= "whatever trump has to say")
-                                    ):
-            
-                        
-            font = ImageFont.truetype("assets/HelveticaNeueLight.ttf", size = 58)
-            
-            # Calculate the average length of a single character of our font.
-            # Note: this takes into account the specific font and font size.
-            avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-            # Translate this average length into a character count
-            max_char_count = int(1050/ avg_char_width)
-            # Create a wrapped text object using scaled character count
-            text = textwrap.fill(text=text, width=max_char_count).replace("\\n", "\n")
-            
-            text_image_y_dimension = 100
-            for i in text:
-                if i == "\n":
-                    text_image_y_dimension+=60
-            
-            mode = "RGB"
-            size = (1094, text_image_y_dimension)
-            color = (255, 255, 255)
-            text_image = Image.new(mode, size, color)
-            
-            #writing_text = ImageDraw.Draw(text_image)
-            writing_text = Pilmoji(text_image)
-            writing_text.text(xy=(0, 0), text=text, font=font, fill='#000000')
-            
-            
-            
-            
-            trump_tweet_header_path = "assets/trump_tweet_header.png"
-            trump_tweet_footer_path = "assets/trump_tweet_footer.png"
-            
-            
-            trump_tweet_footer = Image.open(trump_tweet_footer_path)
-            font_ratio = ImageFont.truetype("assets/HelveticaNeueBold.ttf", size = 36)
-            font_datestamp = ImageFont.truetype("assets/ArialMdm.ttf", size = 26)
-            retweets = retweets_and_likes_generator(8000, 100000)
-            likes = retweets_and_likes_generator(10000, 250000)
-            trump_tweet_ratio = ImageDraw.Draw(trump_tweet_footer)
-            
-            #the retweets-likes
-            trump_tweet_ratio.text(xy = (42, 45), text = retweets, font = font_ratio, fill = "#438DCB")
-            trump_tweet_ratio.text(xy = (210, 45), text = likes, font = font_ratio, fill = "#438DCB")
-            
-            
-            
-            #the datestamp
-            
-            timestamp, datestamp = date_generator()
-            trump_tweet_ratio.text(xy = (42, 134), text = timestamp, font = font_datestamp, fill = "#6E777E")
-            trump_tweet_ratio.text(xy = (170, 134), text = datestamp, font = font_datestamp, fill = "#6E777E")
-            
-            
-            trump_tweet_header = Image.open(trump_tweet_header_path)
-            
-            
-            
-            trump_tweet_y_dimension = text_image_y_dimension + 338
-            mode = "RGB"
-            size = (1200, trump_tweet_y_dimension)
-            color = (255, 255, 255)
-            trump_tweet = Image.new(mode, size, color)
-            
-            trump_tweet.paste(trump_tweet_header)
-            trump_tweet.paste(text_image, (42, 150))
-            trump_tweet.paste(trump_tweet_footer, (0, text_image_y_dimension+151))
-            
-            
-            
-            
-            with io.BytesIO() as image_binary:
-                 trump_tweet.save(image_binary, 'PNG')
-                 image_binary.seek(0)
-                 await interaction.response.send_message(file=discord.File(fp=image_binary, filename='trump_says.png'))
+    @commands.command(
+        name = "caption",
+        help = "Captions your image like a meme."
+    )
+    async def meme_caption(self, ctx, image_link = None, *, caption = None):
+        caption = "".join(caption)
+        meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
+        meme_format_x_dimension, meme_format_y_dimension = meme_format.size
+        aspect_ratio = meme_format_y_dimension/meme_format_x_dimension
+        meme_width = 600
+        meme_format_height = int(meme_width*aspect_ratio)
+        meme_format = meme_format.resize((meme_width, meme_format_height))
+        font = ImageFont.truetype("assets/Arial.ttf", size = 42)
+        
+        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count = int(550/avg_char_width)
+        caption = textwrap.fill(text = caption, width = max_char_count).replace("\\n", "\n")
+        
+        caption_y_dimension = 100
+        for i in caption:
+            if i == "\n":
+                caption_y_dimension+=48
+        mode = "RGB"
+        size = (meme_width, caption_y_dimension)
+        color = (255, 255, 255)
+        caption_image = Image.new(mode, size, color)
+        
+        writing_text = Pilmoji(caption_image)
+        writing_text.text(xy = (25, 25), text = caption, font = font, fill = '#000000')
+        
+        meme_size = (meme_width, caption_y_dimension + meme_format_y_dimension)
+        
+        meme = Image.new(mode, meme_size, color)
+        meme.paste(caption_image)
+        meme.paste(meme_format, (0, caption_y_dimension))
+        
+        with io.BytesIO() as image_binary:
+             meme.save(image_binary, 'PNG')
+             image_binary.seek(0)
+             await ctx.send(file=discord.File(fp=image_binary, filename='caption.png'))
+    
+    #slash version of trump command
+    @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
+    async def slash_command_cog(self, 
+                                interaction:Interaction,
+                                text:str 
+                                ):
+        
+                    
+        font = ImageFont.truetype("assets/HelveticaNeueLight.ttf", size = 58)
+        
+        # Calculate the average length of a single character of our font.
+        # Note: this takes into account the specific font and font size.
+        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        # Translate this average length into a character count
+        max_char_count = int(1050/ avg_char_width)
+        # Create a wrapped text object using scaled character count
+        text = textwrap.fill(text=text, width=max_char_count).replace("\\n", "\n")
+        
+        text_image_y_dimension = 100
+        for i in text:
+            if i == "\n":
+                text_image_y_dimension+=60
+        
+        mode = "RGB"
+        size = (1094, text_image_y_dimension)
+        color = (255, 255, 255)
+        text_image = Image.new(mode, size, color)
+        
+        #writing_text = ImageDraw.Draw(text_image)
+        writing_text = Pilmoji(text_image)
+        writing_text.text(xy=(0, 0), text=text, font=font, fill='#000000')
+        
+        
+        
+        
+        trump_tweet_header_path = "assets/trump_tweet_header.png"
+        trump_tweet_footer_path = "assets/trump_tweet_footer.png"
+        
+        
+        trump_tweet_footer = Image.open(trump_tweet_footer_path)
+        font_ratio = ImageFont.truetype("assets/HelveticaNeueBold.ttf", size = 36)
+        font_datestamp = ImageFont.truetype("assets/ArialMdm.ttf", size = 26)
+        retweets = retweets_and_likes_generator(8000, 100000)
+        likes = retweets_and_likes_generator(10000, 250000)
+        trump_tweet_ratio = ImageDraw.Draw(trump_tweet_footer)
+        
+        #the retweets-likes
+        trump_tweet_ratio.text(xy = (42, 45), text = retweets, font = font_ratio, fill = "#438DCB")
+        trump_tweet_ratio.text(xy = (210, 45), text = likes, font = font_ratio, fill = "#438DCB")
+        
+        
+        
+        #the datestamp
+        
+        timestamp, datestamp = date_generator()
+        trump_tweet_ratio.text(xy = (42, 134), text = timestamp, font = font_datestamp, fill = "#6E777E")
+        trump_tweet_ratio.text(xy = (170, 134), text = datestamp, font = font_datestamp, fill = "#6E777E")
+        
+        
+        trump_tweet_header = Image.open(trump_tweet_header_path)
+        
+        
+        
+        trump_tweet_y_dimension = text_image_y_dimension + 338
+        mode = "RGB"
+        size = (1200, trump_tweet_y_dimension)
+        color = (255, 255, 255)
+        trump_tweet = Image.new(mode, size, color)
+        
+        trump_tweet.paste(trump_tweet_header)
+        trump_tweet.paste(text_image, (42, 150))
+        trump_tweet.paste(trump_tweet_footer, (0, text_image_y_dimension+151))
+        
+        
+        
+        
+        with io.BytesIO() as image_binary:
+             trump_tweet.save(image_binary, 'PNG')
+             image_binary.seek(0)
+             await interaction.response.send_message(file=discord.File(fp=image_binary, filename='trump_says.png'))
+    
+    
+        
 
 
 def setup(bot):

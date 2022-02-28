@@ -321,7 +321,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
             if msg.content != f"{prefix.return_prefix(ctx.guild)}stop" and msg.channel == ctx.channel:
                 if msg.author == self.bot.user:
                     return
-                chance = random.randint(0,50)
+                chance = random.randint(0,100)
                 if chance in range(13):
                     await ctx.channel.send("*Matt has hung up on you!*")
                     break
