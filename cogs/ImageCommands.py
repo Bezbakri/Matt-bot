@@ -395,16 +395,31 @@ class ImageCommands(commands.Cog):
         writing_text = Pilmoji(caption_image)
         writing_text.text(xy = (25, 25), text = caption, font = font, fill = '#000000')
         
-        meme_size = (meme_width, caption_y_dimension + meme_format_y_dimension)
+        meme_size = (meme_width, caption_y_dimension + meme_format_height)
         
-        meme = Image.new(mode, meme_size, color)
-        meme.paste(caption_image)
-        meme.paste(meme_format, (0, caption_y_dimension))
         
-        with io.BytesIO() as image_binary:
-             meme.save(image_binary, 'PNG')
-             image_binary.seek(0)
-             await ctx.send(file=discord.File(fp=image_binary, filename='caption.png'))
+        
+        if meme_format.format == "GIF":
+            frames = []
+            meme_frame = Image.new(mode, meme_size, color)
+            for frame in range(meme_format.n_frames):
+                meme_frame.paste(caption_image)
+                meme_frame.paste(meme_format.seek(frame), (0, caption_y_dimension))
+                frame.append(meme_frame)
+            meme_first_frame = frames[0]
+            with io.BytesIO() as image_binary:
+                 meme_first_frame.save(image_binary, 'GIF', append_images = frames[1:], save_all = True)
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
+        else:
+            meme = Image.new(mode, meme_size, color)
+            meme.paste(caption_image)
+            meme.paste(meme_format, (0, caption_y_dimension))
+            
+            with io.BytesIO() as image_binary:
+                 meme.save(image_binary, 'PNG')
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.png'))
     
     #slash version of trump command
     @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
