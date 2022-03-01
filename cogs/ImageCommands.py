@@ -377,7 +377,7 @@ class ImageCommands(commands.Cog):
         meme_width = 600
         meme_format_height = int(meme_width*aspect_ratio)
 
-        font = ImageFont.truetype("assets/Arial.ttf", size = 42)
+        font = ImageFont.truetype("assets/ArialBold.ttf", size = 54)
         
         avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
         max_char_count = int(550/avg_char_width)
@@ -386,14 +386,14 @@ class ImageCommands(commands.Cog):
         caption_y_dimension = 100
         for i in caption:
             if i == "\n":
-                caption_y_dimension+=48
+                caption_y_dimension+=60
         mode = "RGB"
         size = (meme_width, caption_y_dimension)
         color = (255, 255, 255)
         caption_image = Image.new(mode, size, color)
         
         writing_text = Pilmoji(caption_image)
-        writing_text.text(xy = (25, 25), text = caption, font = font, fill = '#000000')
+        writing_text.text(xy = (300, 25), text = caption, font = font, fill = '#000000', anchor = "ma", align= "center",)
         del writing_text
         
         meme_size = (meme_width, caption_y_dimension + meme_format_height)
@@ -423,9 +423,10 @@ class ImageCommands(commands.Cog):
                 meme_frame.save(meme_frame_byte_stream, "GIF")
                 meme_frame = Image.open(meme_frame_byte_stream)
                 frames.append(meme_frame)
+            avg_duration = meme_format.info['duration']
             meme_first_frame = frames[0]
             with io.BytesIO() as image_binary:
-                 meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0)
+                 meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0, duration = avg_duration)
                  image_binary.seek(0)
                  await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
     
