@@ -394,6 +394,7 @@ class ImageCommands(commands.Cog):
         
         writing_text = Pilmoji(caption_image)
         writing_text.text(xy = (25, 25), text = caption, font = font, fill = '#000000')
+        del writing_text
         
         meme_size = (meme_width, caption_y_dimension + meme_format_height)
         
