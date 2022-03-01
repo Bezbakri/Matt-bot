@@ -380,7 +380,7 @@ class ImageCommands(commands.Cog):
         font = ImageFont.truetype("assets/ArialBold.ttf", size = 54)
         
         avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-        max_char_count = int(550/avg_char_width)
+        max_char_count = int(600/avg_char_width)
         caption = textwrap.fill(text = caption, width = max_char_count).replace("\\n", "\n")
         
         caption_y_dimension = 100
