@@ -78,7 +78,9 @@ class ImageCommands(commands.Cog):
     async def get_asset_from_user(self, ctx, image_link = None, allow_static_image = True, allow_gif = False):
          
         try:
+            extra_text = ""
             if len(ctx.message.attachments) > 0:
+                    extra_text = image_link
                     image_link = ctx.message.attachments[0].url
             if image_link.lower() == "me":
                 image_link = ctx.author.avatar.url
@@ -93,11 +95,11 @@ class ImageCommands(commands.Cog):
                 img.putpalette(mypalette)
                 static_img = Image.new("RGBA", img.size)
                 static_img.paste(img)
-                return static_img
+                return static_img, extra_text
                     
                 
             else:
-                return img
+                return img, extra_text
         except:
             await ctx.channel.send("fucker gimme an image link")
     
@@ -120,6 +122,7 @@ class ImageCommands(commands.Cog):
         #now image manipulation, my most hated part
         #img = Image.open(image_name)
         img = await self.get_asset_from_user(ctx, image_link)
+        img = img[0]
         
         #resizing
         width, height = img.size
@@ -371,6 +374,9 @@ class ImageCommands(commands.Cog):
     async def meme_caption(self, ctx, image_link = None, *, caption = None):
         caption = "".join(caption)
         meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
+        caption = meme_format[1]+ " " + caption
+        caption = caption.strip()
+        meme_format = meme_format[0]
         meme_format_type = meme_format.format
         meme_format_x_dimension, meme_format_y_dimension = meme_format.size
         aspect_ratio = meme_format_y_dimension/meme_format_x_dimension
