@@ -6,10 +6,10 @@ Created on Wed Dec 29 21:43:23 2021
 """
 
 import nextcord as discord
-from nextcord import Interaction, SlashOption
+from nextcord import Interaction
 from nextcord.ext import commands
 import requests
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageSequence
 import os
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
@@ -27,7 +27,6 @@ cse_token = os.getenv("SEARCH_ENGINE_ID")
 TEST_SERVER_ID = os.getenv("TEST_SERVER_ID") #for testing slash commands
 
 resource = build("customsearch", 'v1', developerKey=api_key).cse()
-
 
 
 def member_role_color(member):
@@ -372,11 +371,12 @@ class ImageCommands(commands.Cog):
     async def meme_caption(self, ctx, image_link = None, *, caption = None):
         caption = "".join(caption)
         meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
+        meme_format_type = meme_format.format
         meme_format_x_dimension, meme_format_y_dimension = meme_format.size
         aspect_ratio = meme_format_y_dimension/meme_format_x_dimension
         meme_width = 600
         meme_format_height = int(meme_width*aspect_ratio)
-        meme_format = meme_format.resize((meme_width, meme_format_height))
+
         font = ImageFont.truetype("assets/Arial.ttf", size = 42)
         
         avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
@@ -399,19 +399,8 @@ class ImageCommands(commands.Cog):
         
         
         
-        if meme_format.format == "GIF":
-            frames = []
-            meme_frame = Image.new(mode, meme_size, color)
-            for frame in range(meme_format.n_frames):
-                meme_frame.paste(caption_image)
-                meme_frame.paste(meme_format.seek(frame), (0, caption_y_dimension))
-                frame.append(meme_frame)
-            meme_first_frame = frames[0]
-            with io.BytesIO() as image_binary:
-                 meme_first_frame.save(image_binary, 'GIF', append_images = frames[1:], save_all = True)
-                 image_binary.seek(0)
-                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
-        else:
+        if meme_format_type != "GIF":
+            meme_format = meme_format.resize((meme_width, meme_format_height))
             meme = Image.new(mode, meme_size, color)
             meme.paste(caption_image)
             meme.paste(meme_format, (0, caption_y_dimension))
@@ -420,6 +409,24 @@ class ImageCommands(commands.Cog):
                  meme.save(image_binary, 'PNG')
                  image_binary.seek(0)
                  await ctx.send(file=discord.File(fp=image_binary, filename='caption.png'))
+            
+        else:
+            frames = []
+            
+            for frame in ImageSequence.Iterator(meme_format):
+                meme_frame = Image.new(mode, meme_size, color)
+                frame = frame.resize((meme_width, meme_format_height))
+                meme_frame.paste(caption_image)
+                meme_frame.paste(frame, (0, caption_y_dimension))
+                meme_frame_byte_stream = io.BytesIO()
+                meme_frame.save(meme_frame_byte_stream, "GIF")
+                meme_frame = Image.open(meme_frame_byte_stream)
+                frames.append(meme_frame)
+            meme_first_frame = frames[0]
+            with io.BytesIO() as image_binary:
+                 meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True)
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
     
     #slash version of trump command
     @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
