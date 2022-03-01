@@ -425,7 +425,7 @@ class ImageCommands(commands.Cog):
                 frames.append(meme_frame)
             meme_first_frame = frames[0]
             with io.BytesIO() as image_binary:
-                 meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True)
+                 meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0)
                  image_binary.seek(0)
                  await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
     
