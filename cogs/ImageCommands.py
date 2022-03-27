@@ -436,6 +436,96 @@ class ImageCommands(commands.Cog):
                  image_binary.seek(0)
                  await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
     
+    @commands.command(
+        name = "motivation",
+        help = "Captions your image like a demotivational poster. Separate the title and the rest of the text with | ."
+    )
+    async def meme_demotivation(self, ctx, image_link = None, *, caption = None):
+        caption = "".join(caption)
+        meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
+        caption = meme_format[1]+ " " + caption
+        caption = caption.strip()
+        meme_format = meme_format[0]
+        meme_format_type = meme_format.format
+        meme_format_x_dimension, meme_format_y_dimension = meme_format.size
+        aspect_ratio = meme_format_y_dimension/meme_format_x_dimension
+        meme_width = 600
+        meme_format_height = int(meme_width*aspect_ratio)
+        
+        caption = caption.partition(" | ")
+        title = caption[0]
+        subtitle = caption[2]
+
+        title_font = ImageFont.truetype("assets/motivation.ttf", size = 64)
+        subtitle_font = ImageFont.truetype("assets/motivation.ttf", size = 36)
+        #title
+        avg_char_width = sum(title_font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count_title = int(500/avg_char_width)
+        title = textwrap.fill(text = title, width = max_char_count_title).replace("\\n", "\n")
+        #subtitle
+        avg_char_width = sum(subtitle_font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count = int(650/avg_char_width)
+        subtitle = textwrap.fill(text = subtitle, width = max_char_count).replace("\\n", "\n")
+        
+        poster_y_dimension = meme_format_height + 250
+        subtitle_y_pos = meme_format_height + 170
+        for i in title:
+            if i == "\n":
+                poster_y_dimension+=70
+                subtitle_y_pos+=70
+        for i in subtitle:
+            if i == "\n":
+                poster_y_dimension+=40
+        mode = "RGB"
+        size = (meme_width + 100, poster_y_dimension)
+        color = (0, 0, 0)
+        poster = Image.new(mode, size, color)
+        
+        writing_text = Pilmoji(poster)
+        writing_text.text(xy = (350, meme_format_height + 100), text = title, font = title_font, fill = '#FFFFFF', anchor = "ma", align= "center",)
+        writing_text.text(xy = (350,  subtitle_y_pos), text = subtitle, font = subtitle_font, fill = '#FFFFFF', anchor = "ma", align= "center",)
+        del writing_text
+        
+        meme_size = (meme_width+100, poster_y_dimension)
+        
+        
+        
+        if meme_format_type != "GIF":
+            meme_format = meme_format.resize((meme_width, meme_format_height))
+            meme = Image.new(mode, meme_size, color)
+            meme.paste(poster)
+            meme.paste(meme_format, (50, 50))
+            addons = ImageDraw.Draw(meme)
+            addons.rectangle((40, 40, meme_width+60, meme_format_height+60), outline = '#FFFFFF', width = 2)
+            del addons
+            
+            with io.BytesIO() as image_binary:
+                 meme.save(image_binary, 'PNG')
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.png'))
+            
+        else:
+            frames = []
+            
+            for frame in ImageSequence.Iterator(meme_format):
+                meme_frame = Image.new(mode, meme_size, color)
+                frame = frame.resize((meme_width, meme_format_height))
+                meme_frame.paste(poster)
+                meme_frame.paste(frame, (50, 50))
+                meme_frame_byte_stream = io.BytesIO()
+                meme_frame.save(meme_frame_byte_stream, "GIF")
+                meme_frame = Image.open(meme_frame_byte_stream)
+                addons = ImageDraw.Draw(meme_frame)
+                addons.rectangle((40, 40, meme_width+60, meme_format_height+60), outline = '#FFFFFF', width = 2)
+                del addons
+                frames.append(meme_frame)
+            avg_duration = meme_format.info['duration']
+            meme_first_frame = frames[0]
+            with io.BytesIO() as image_binary:
+                 meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0, duration = avg_duration)
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
+    
     #slash version of trump command
     @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
     async def slash_command_cog(self, 
