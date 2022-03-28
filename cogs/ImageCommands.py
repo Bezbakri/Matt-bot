@@ -468,7 +468,7 @@ class ImageCommands(commands.Cog):
         subtitle_font = ImageFont.truetype("assets/motivation.ttf", size = 36)
         #title
         avg_char_width = sum(title_font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-        max_char_count_title = int(500/avg_char_width)
+        max_char_count_title = int(550/avg_char_width)
         title = textwrap.fill(text = title, width = max_char_count_title).replace("\\n", "\n")
         #subtitle
         avg_char_width = sum(subtitle_font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
@@ -510,7 +510,7 @@ class ImageCommands(commands.Cog):
             with io.BytesIO() as image_binary:
                  meme.save(image_binary, 'PNG')
                  image_binary.seek(0)
-                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.png'))
+                 await ctx.send(file=discord.File(fp=image_binary, filename='motivation.png'))
             
         else:
             frames = []
@@ -532,7 +532,7 @@ class ImageCommands(commands.Cog):
             with io.BytesIO() as image_binary:
                  meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0, duration = avg_duration)
                  image_binary.seek(0)
-                 await ctx.send(file=discord.File(fp=image_binary, filename='caption.gif'))
+                 await ctx.send(file=discord.File(fp=image_binary, filename='motivation.gif'))
     
     #slash version of trump command
     @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
