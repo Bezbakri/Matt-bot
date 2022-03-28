@@ -372,9 +372,13 @@ class ImageCommands(commands.Cog):
         help = "Captions your image like a meme."
     )
     async def meme_caption(self, ctx, image_link = None, *, caption = None):
-        caption = "".join(caption)
+        if caption:
+            caption = "".join(caption)
         meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
-        caption = meme_format[1]+ " " + caption
+        if caption:
+            caption = meme_format[1]+ " " + caption
+        else:
+            caption = meme_format[1]
         caption = caption.strip()
         meme_format = meme_format[0]
         meme_format_type = meme_format.format
@@ -386,7 +390,7 @@ class ImageCommands(commands.Cog):
         font = ImageFont.truetype("assets/caption.ttf", size = 54)
         
         avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-        max_char_count = int(650/avg_char_width)
+        max_char_count = int(625/avg_char_width)
         caption = textwrap.fill(text = caption, width = max_char_count).replace("\\n", "\n")
         
         caption_y_dimension = 100
@@ -441,9 +445,13 @@ class ImageCommands(commands.Cog):
         help = "Captions your image like a demotivational poster. Separate the title and the rest of the text with | ."
     )
     async def meme_demotivation(self, ctx, image_link = None, *, caption = None):
-        caption = "".join(caption)
+        if caption:
+            caption = "".join(caption)
         meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
-        caption = meme_format[1]+ " " + caption
+        if caption:
+            caption = meme_format[1]+ " " + caption
+        else:
+            caption = meme_format[1]
         caption = caption.strip()
         meme_format = meme_format[0]
         meme_format_type = meme_format.format
