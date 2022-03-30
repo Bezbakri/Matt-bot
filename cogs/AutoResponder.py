@@ -14,6 +14,7 @@ import re
 
 load_dotenv()
 BOT_USER_ID=os.getenv("BOT_USER_ID")
+SQUILL_USER_ID=int(os.getenv("SQUILL_USER_ID"))
 
 start_line_dad_expression = re.compile("[Ii]'*( a)*m")
 
@@ -54,7 +55,7 @@ class AutoResponder(commands.Cog):
             if "ratio" in message.content.lower():
                 await message.add_reaction(self.bot.upvote)
                 await message.add_reaction(self.bot.downvote)
-            if message.author.id == 316125981725425666:
+            if message.author.id == 316125981725425666 or message.author.id == SQUILL_USER_ID:
                 if "gaymers" in message.content.lower():
                     if "morning" in message.content.lower():
                         await message.channel.send(f"<#{message.channel.id}> is online")

@@ -194,25 +194,29 @@ class ImageCommands(commands.Cog):
         
         #image_name = "assets/search_result.png"
         
-        result = resource.list(q=search_query, cx=cse_token, searchType='image').execute()
-        await ctx.channel.send("Search done!")
-        result_to_show_index = random.randint(0, len(result['items']))
-        result_to_show = result['items'][result_to_show_index]
-        image_link = result_to_show['link']
+        try:
+            result = resource.list(q=search_query, cx=cse_token, searchType='image').execute()
+            await ctx.channel.send("Search done!")
+            result_to_show_index = random.randint(0, len(result['items']))
+            result_to_show = result['items'][result_to_show_index]
+            image_link = result_to_show['link']
+            
+            #response = requests.get(image_link)
+            #fh = open(image_name, "wb")
+            #fh.write(response.content)
+            #fh.close()
+            #await ctx.channel.send("Successful image")
+            
+            embed_url = result_to_show['image']['contextLink']
+            embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
+            embed.set_image(url = image_link)
+            embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
+            embed.timestamp = datetime.utcnow()
+            
+            await ctx.channel.send(embed = embed)
         
-        #response = requests.get(image_link)
-        #fh = open(image_name, "wb")
-        #fh.write(response.content)
-        #fh.close()
-        #await ctx.channel.send("Successful image")
-        
-        embed_url = result_to_show['image']['contextLink']
-        embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
-        embed.set_image(url = image_link)
-        embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
-        embed.timestamp = datetime.utcnow()
-        
-        await ctx.channel.send(embed = embed)
+        except:
+            await ctx.channel.send("Search failed. Try again, or not.")
         
         
     @commands.command(
