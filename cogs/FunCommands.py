@@ -25,10 +25,6 @@ def talking_ben_simulator():
     choice = random.randint(0,5)
     return response_list[choice]
 
-def decide_option():
-    response_list = ["Yes!", "No!"]
-    choice = random.randint(0,1)
-    return response_list[choice]
 
 async def is_owner(ctx):
     return ctx.author.id == 316125981725425666        
@@ -313,8 +309,9 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
     
     @discord.slash_command(name = "decide", description = "Decides whether you should do it or not.")
     async def decide(self, interaction: Interaction):
-        choice = decide_option()
-        await interaction.response.send_message(choice)
+        response_list = ["Yes!", "No!"]
+        choice = random.randint(0,1)
+        await interaction.response.send_message(response_list[choice])
     
     @commands.command(
         name = "telephone",
