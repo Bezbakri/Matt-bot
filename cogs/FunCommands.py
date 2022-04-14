@@ -5,6 +5,7 @@ Created on Mon Dec 27 16:26:15 2021
 @author: bezbakri
 """
 import nextcord as discord
+from nextcord import Interaction
 import random
 from nextcord.ext import commands
 import prefix
@@ -22,6 +23,11 @@ def member_role_color(member):
 def talking_ben_simulator():
     response_list = ["Yes.", "No.", "**No.**", "Hohoho!", "*Hohoho!*", "Bleugh!"]
     choice = random.randint(0,5)
+    return response_list[choice]
+
+def decide_option():
+    response_list = ["Yes!", "No!"]
+    choice = random.randint(0,1)
     return response_list[choice]
 
 async def is_owner(ctx):
@@ -87,6 +93,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         
         
         copypasta_titles = []
+        copypasta_titles_lowercase = []
         copypastas = "assets/copypastas.csv"
         
         with open(copypastas, "r", newline = '\r\n') as f:
@@ -94,9 +101,11 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
             for row in freader:
                 if row[0]:
                     copypasta_titles.append(row[0])
+                    copypasta_titles_lowercase.append(row[0].lower())
         copypasta_titles.pop(0)
         number_of_copypastas = len(copypasta_titles)
         list_of_copypastas = ", ".join(copypasta_titles)
+        
         #testing to see if my csv method worked
         '''copypasta_titles_string = ""
         
@@ -126,14 +135,14 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
                             copypasta_to_send = row[1].replace("\\n", "\n")
                 await ctx.channel.send(f"**{copypasta_title}**\n{copypasta_to_send}")
         
-        elif arg in copypasta_titles:
-            if arg == "Petersonian":
+        elif arg.lower() in copypasta_titles_lowercase:
+            if arg.lower() == "petersonian":
                 await ctx.channel.send(embed = embed_petersonian)
             else:
                 with open(copypastas, "r", newline = '\r\n') as f:
                     freader = csv.reader(f)
                     for row in freader:
-                        if row[0] == arg:
+                        if row[0].lower() == arg.lower():
                             copypasta_to_send = row[1]
                 await ctx.channel.send(copypasta_to_send.replace("\\n", "\n"))
         
@@ -300,6 +309,12 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         await channel_to_send.send(message)
         await ctx.channel.send(f"Sent message to #{channel_to_send}")
         
+    
+    
+    @discord.slash_command(name = "decide", description = "Decides whether you should do it or not.")
+    async def decide(self, interaction: Interaction):
+        choice = decide_option()
+        await interaction.response.send_message(choice)
     
     @commands.command(
         name = "telephone",

@@ -376,10 +376,9 @@ class ImageCommands(commands.Cog):
         help = "Captions your image like a meme."
     )
     async def meme_caption(self, ctx, image_link = None, *, caption = None):
-        if caption:
-            caption = "".join(caption)
         meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
         if caption:
+            caption = "".join(caption)
             caption = meme_format[1]+ " " + caption
         else:
             caption = meme_format[1]
@@ -449,10 +448,9 @@ class ImageCommands(commands.Cog):
         help = "Captions your image like a demotivational poster. Separate the title and the rest of the text with | ."
     )
     async def meme_demotivation(self, ctx, image_link = None, *, caption = None):
-        if caption:
-            caption = "".join(caption)
         meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
         if caption:
+            caption = "".join(caption)
             caption = meme_format[1]+ " " + caption
         else:
             caption = meme_format[1]
@@ -472,7 +470,7 @@ class ImageCommands(commands.Cog):
         subtitle_font = ImageFont.truetype("assets/motivation.ttf", size = 36)
         #title
         avg_char_width = sum(title_font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-        max_char_count_title = int(550/avg_char_width)
+        max_char_count_title = int(700/avg_char_width)
         title = textwrap.fill(text = title, width = max_char_count_title).replace("\\n", "\n")
         #subtitle
         avg_char_width = sum(subtitle_font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)

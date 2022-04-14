@@ -100,6 +100,7 @@ async def slash_test(interaction:Interaction):
 @bot.slash_command(name = "say", description = "Repeats whatever you say.")
 async def say(interaction: Interaction, message: str):
     await interaction.response.send_message(message)
+    
 
 @bot.command()
 @commands.has_permissions(administrator=True)
