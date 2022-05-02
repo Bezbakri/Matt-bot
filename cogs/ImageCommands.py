@@ -9,7 +9,7 @@ import nextcord as discord
 from nextcord import Interaction
 from nextcord.ext import commands
 import requests
-from PIL import Image, ImageDraw, ImageFont, ImageSequence
+from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageOps
 import os
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
@@ -218,7 +218,51 @@ class ImageCommands(commands.Cog):
         except:
             await ctx.channel.send("Search failed. Try again, or not.")
         
+    
+    @commands.command(
+        name = "dialog",
+        aliases = ['imagesay', 'dialogue'],
+        help = "Puts a dialog box on the image"
+        )    
+    async def dialog(self, ctx, image_link = None):
+        meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
+        source = meme_format[0]
+        mask = Image.open("assets/dialog_source.png").convert("L")
+        old_width, old_height = source.size
+        aspect_ratio = old_height/old_width
+        new_width = 600
+        new_height = aspect_ratio*new_width
         
+        mask = mask.resize((new_width, int(new_height)))
+        # Threshold and invert the colors (white will be transparent)
+        mask = mask.point(lambda x: x < 100 and 255)
+        
+        if source.format != "GIF":
+            
+            # The size of the images must match before apply the mask
+            dialog = ImageOps.fit(source,mask.size)
+            
+            dialog.putalpha(mask) # Modifies the original image without return 
+            
+            with io.BytesIO() as image_binary:
+                 dialog.save(image_binary, 'PNG')
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='dialog.png'))
+        else:
+            frames = []
+            for frame in ImageSequence.Iterator(source):
+                dialog_frame = Image.new("RGBA", (new_width, int(new_height)), (0, 0, 0, 0))
+                frame = ImageOps.fit(frame,mask.size)
+                dialog = Image.composite(frame, dialog_frame, mask)
+                frames.append(dialog)
+            avg_duration = source.info['duration']
+            dialog_first_frame = frames[0]
+            with io.BytesIO() as image_binary:
+                 dialog_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0, duration = avg_duration)
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='dialog.gif'))
+    
+    
     @commands.command(
         name = "trumptweet",
         aliases = ['trump', 'trumpet'],
