@@ -63,7 +63,8 @@ class FunCommands(commands.Cog):
     @commands.command(
         name = "copypasta",
         help = copypasta_help,
-        brief = "gives you a copypasta"
+        brief = "gives you a copypasta",
+        aliases = ["tag", ]
     )
     async def copypasta(self, ctx, *arg):
         
