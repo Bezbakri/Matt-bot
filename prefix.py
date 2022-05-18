@@ -17,4 +17,5 @@ def return_prefix(guild):
             prefixes = json.load(f)
     
     except:
+        
         return prefixes.get(str(guild.id), "$")
