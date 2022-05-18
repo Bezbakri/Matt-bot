@@ -12,10 +12,6 @@ import json
 def return_prefix(guild):
     if guild == None:
         return "$"
-    try:
-        with open("prefixes.json", "r") as f:
-            prefixes = json.load(f)
-    
-    except:
-        
-        return prefixes.get(str(guild.id), "$")
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+    return prefixes.get(str(guild.id), "$")
