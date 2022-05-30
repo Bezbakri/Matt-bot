@@ -39,6 +39,7 @@ class AutoResponder(commands.Cog):
         self.bot.hello_friends_emoji = "<:hellofriends:943005593566838794>"
         self.bot.upvote = "<:upvote:944219796554252429>"
         self.bot.downvote = "<:downvote:944219797162459136>"
+        self.bot.amogus_emoji = "\U0001F237"
         
         
     @commands.Cog.listener()
@@ -52,6 +53,8 @@ class AutoResponder(commands.Cog):
                     return
             if "hello friends" in message.content.lower():
                 await message.add_reaction(self.bot.hello_friends_emoji)
+            if "sus" in message.content.lower():
+                await message.add_reaction(self.bot.amogus_emoji)
             if "ratio" in message.content.lower():
                 await message.add_reaction(self.bot.upvote)
                 await message.add_reaction(self.bot.downvote)

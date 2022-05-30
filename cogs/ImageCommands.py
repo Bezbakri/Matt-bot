@@ -8,6 +8,7 @@ Created on Wed Dec 29 21:43:23 2021
 import nextcord as discord
 from nextcord import Interaction
 from nextcord.ext import commands
+from nextcord.ext import menus
 import requests
 from PIL import Image, ImageDraw, ImageFont, ImageSequence, ImageOps
 import os
@@ -195,17 +196,14 @@ class ImageCommands(commands.Cog):
         #image_name = "assets/search_result.png"
         
         try:
+            global result
             result = resource.list(q=search_query, cx=cse_token, searchType='image').execute()
             await ctx.channel.send("Search done!")
-            result_to_show_index = random.randint(0, len(result['items']))
+            #result_to_show_index = random.randint(0, len(result['items']))
+            global result_to_show_index
+            result_to_show_index = 0
             result_to_show = result['items'][result_to_show_index]
             image_link = result_to_show['link']
-            
-            #response = requests.get(image_link)
-            #fh = open(image_name, "wb")
-            #fh.write(response.content)
-            #fh.close()
-            #await ctx.channel.send("Successful image")
             
             embed_url = result_to_show['image']['contextLink']
             embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
@@ -213,7 +211,47 @@ class ImageCommands(commands.Cog):
             embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
             embed.timestamp = datetime.utcnow()
             
-            await ctx.channel.send(embed = embed)
+            class MyButtonMenu(menus.ButtonMenu):
+                def __init__(self):
+                    super().__init__(disable_buttons_after=False)
+            
+                async def send_initial_message(self, ctx, channel):
+                    return await channel.send(embed = embed)
+                @discord.ui.button(emoji="⬅️")
+                async def on_thumbs_up(self, button, interaction):
+                    global result_to_show_index
+                    result_to_show_index = result_to_show_index - 1 if result_to_show_index != 0 else 0
+                    global result
+                    result_to_show = result['items'][result_to_show_index]
+                    image_link = result_to_show['link']
+                    
+                    embed_url = result_to_show['image']['contextLink']
+                    embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
+                    embed.set_image(url = image_link)
+                    embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
+                    embed.timestamp = datetime.utcnow()
+                    await self.message.edit(embed = embed)
+            
+                @discord.ui.button(emoji="➡️")
+                async def on_thumbs_down(self, button, interaction):
+                    global result_to_show_index
+                    result_to_show_index = result_to_show_index + 1 if result_to_show_index != 0 else 0
+                    global result
+                    result_to_show = result['items'][result_to_show_index]
+                    image_link = result_to_show['link']
+                    
+                    embed_url = result_to_show['image']['contextLink']
+                    embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
+                    embed.set_image(url = image_link)
+                    embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
+                    embed.timestamp = datetime.utcnow()
+                    await self.message.edit(embed = embed)
+            
+                @discord.ui.button(emoji="\N{BLACK SQUARE FOR STOP}\ufe0f")
+                async def on_stop(self, button, interaction):
+                    self.stop()
+            
+            await MyButtonMenu().start(ctx)
         
         except:
             await ctx.channel.send("Search failed. Try again, or not.")
