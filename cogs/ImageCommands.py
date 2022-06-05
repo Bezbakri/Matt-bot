@@ -59,9 +59,9 @@ def retweets_and_likes_generator(lower_limit, upper_limit):
         ratio+= i
     return ratio
     
-class MyButtonMenu(menus.ButtonMenu):
+class MyButtonMenu(menus.Menu):
     def __init__(self, search_query, result):
-        super().__init__(disable_buttons_after=True)
+        super().__init__()
         self.search_query = search_query
         self.result = result
         self.result_to_show_index = 0
@@ -76,35 +76,36 @@ class MyButtonMenu(menus.ButtonMenu):
         embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
         embed.timestamp = datetime.utcnow()
         return await channel.send(embed = embed)
-    @discord.ui.button(label = "Previous Image", style = discord.ButtonStyle.green)
-    async def on_thumbs_up(self, button, interaction):
+    @menus.button("⬅️")
+    async def last_image(self, payload):
         self.result_to_show_index = self.result_to_show_index - 1 if self.result_to_show_index != 0 else 0
         result_to_show = self.result['items'][self.result_to_show_index]
         image_link = result_to_show['link']
-        embed_color = member_role_color(interaction.author)
+        embed_color = member_role_color(self.ctx.author)
         embed_url = result_to_show['image']['contextLink']
         embed = discord.Embed(title = f"{self.search_query}", url = embed_url, color = embed_color)
         embed.set_image(url = image_link)
-        embed.set_footer(text = f"Requested by {interaction.author.display_name}", icon_url = interaction.author.avatar.url)
+        embed.set_footer(text = f"Requested by {self.ctx.author.display_name}", icon_url = self.ctx.author.avatar.url)
         embed.timestamp = datetime.utcnow()
         await self.message.edit(embed = embed)
 
-    @discord.ui.button(label = "Next Image", style = discord.ButtonStyle.green)
-    async def on_thumbs_down(self, button, interaction):
-        self.result_to_show_index = self.result_to_show_index + 1 if self.result_to_show_index != 0 else 0
+    @menus.button("➡️")
+    async def next_image(self, payload):
+        self.result_to_show_index = self.result_to_show_index + 1 if self.result_to_show_index != len(self.result['items']) else len(self.result['items'])
         result_to_show = self.result['items'][self.result_to_show_index]
         image_link = result_to_show['link']
-        embed_color = member_role_color(interaction.author)
+        embed_color = member_role_color(self.ctx.author)
         embed_url = result_to_show['image']['contextLink']
         embed = discord.Embed(title = f"{self.search_query}", url = embed_url, color = embed_color)
         embed.set_image(url = image_link)
-        embed.set_footer(text = f"Requested by {interaction.author.display_name}", icon_url = interaction.author.avatar.url)
+        embed.set_footer(text = f"Requested by {self.ctx.author.display_name}", icon_url = self.ctx.author.avatar.url)
         embed.timestamp = datetime.utcnow()
         await self.message.edit(embed = embed)
 
-    @discord.ui.button(label = "Stop", style = discord.ButtonStyle.red)
-    async def on_stop(self, button, interaction):
+    @menus.button("🟥")
+    async def on_stop(self, payload):
         self.stop()
+        
 class ImageCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -230,9 +231,6 @@ class ImageCommands(commands.Cog):
     
     async def only_100_queries_a_day(self, ctx, *search_query):
         
-        
-        
-        
         search_query = " ".join(search_query)
         
         await ctx.channel.send(f"Starting search for {search_query}...")
@@ -245,12 +243,11 @@ class ImageCommands(commands.Cog):
             #result_to_show_index = random.randint(0, len(result['items']))
             
             
-            image_result_message = MyButtonMenu(search_query, result) 
-            await image_result_message.start(ctx)
-        
         except:
             await ctx.channel.send("Search failed. Try again, or not.")
         
+        image_result_message = MyButtonMenu(search_query, result) 
+        await image_result_message.start(ctx)
     
     @commands.command(
         name = "dialog",
