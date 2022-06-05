@@ -59,7 +59,52 @@ def retweets_and_likes_generator(lower_limit, upper_limit):
         ratio+= i
     return ratio
     
+class MyButtonMenu(menus.ButtonMenu):
+    def __init__(self, search_query, result):
+        super().__init__(disable_buttons_after=True)
+        self.search_query = search_query
+        self.result = result
+        self.result_to_show_index = 0
+    
+    async def send_initial_message(self, ctx, channel):
+        result_to_show = self.result['items'][self.result_to_show_index]
+        image_link = result_to_show['link']
+        embed_color = member_role_color(ctx.author)
+        embed_url = result_to_show['image']['contextLink']
+        embed = discord.Embed(title = f"{self.search_query}", url = embed_url, color = embed_color)
+        embed.set_image(url = image_link)
+        embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
+        embed.timestamp = datetime.utcnow()
+        return await channel.send(embed = embed)
+    @discord.ui.button(label = "Previous Image", style = discord.ButtonStyle.green)
+    async def on_thumbs_up(self, button, interaction):
+        self.result_to_show_index = self.result_to_show_index - 1 if self.result_to_show_index != 0 else 0
+        result_to_show = self.result['items'][self.result_to_show_index]
+        image_link = result_to_show['link']
+        embed_color = member_role_color(interaction.author)
+        embed_url = result_to_show['image']['contextLink']
+        embed = discord.Embed(title = f"{self.search_query}", url = embed_url, color = embed_color)
+        embed.set_image(url = image_link)
+        embed.set_footer(text = f"Requested by {interaction.author.display_name}", icon_url = interaction.author.avatar.url)
+        embed.timestamp = datetime.utcnow()
+        await self.message.edit(embed = embed)
 
+    @discord.ui.button(label = "Next Image", style = discord.ButtonStyle.green)
+    async def on_thumbs_down(self, button, interaction):
+        self.result_to_show_index = self.result_to_show_index + 1 if self.result_to_show_index != 0 else 0
+        result_to_show = self.result['items'][self.result_to_show_index]
+        image_link = result_to_show['link']
+        embed_color = member_role_color(interaction.author)
+        embed_url = result_to_show['image']['contextLink']
+        embed = discord.Embed(title = f"{self.search_query}", url = embed_url, color = embed_color)
+        embed.set_image(url = image_link)
+        embed.set_footer(text = f"Requested by {interaction.author.display_name}", icon_url = interaction.author.avatar.url)
+        embed.timestamp = datetime.utcnow()
+        await self.message.edit(embed = embed)
+
+    @discord.ui.button(label = "Stop", style = discord.ButtonStyle.red)
+    async def on_stop(self, button, interaction):
+        self.stop()
 class ImageCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -186,7 +231,6 @@ class ImageCommands(commands.Cog):
     async def only_100_queries_a_day(self, ctx, *search_query):
         
         
-        embed_color = member_role_color(ctx.author)
         
         
         search_query = " ".join(search_query)
@@ -196,62 +240,13 @@ class ImageCommands(commands.Cog):
         #image_name = "assets/search_result.png"
         
         try:
-            global result
             result = resource.list(q=search_query, cx=cse_token, searchType='image').execute()
             await ctx.channel.send("Search done!")
             #result_to_show_index = random.randint(0, len(result['items']))
-            global result_to_show_index
-            result_to_show_index = 0
-            result_to_show = result['items'][result_to_show_index]
-            image_link = result_to_show['link']
             
-            embed_url = result_to_show['image']['contextLink']
-            embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
-            embed.set_image(url = image_link)
-            embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
-            embed.timestamp = datetime.utcnow()
             
-            class MyButtonMenu(menus.ButtonMenu):
-                def __init__(self):
-                    super().__init__(disable_buttons_after=False)
-            
-                async def send_initial_message(self, ctx, channel):
-                    return await channel.send(embed = embed)
-                @discord.ui.button(emoji="⬅️")
-                async def on_thumbs_up(self, button, interaction):
-                    global result_to_show_index
-                    result_to_show_index = result_to_show_index - 1 if result_to_show_index != 0 else 0
-                    global result
-                    result_to_show = result['items'][result_to_show_index]
-                    image_link = result_to_show['link']
-                    
-                    embed_url = result_to_show['image']['contextLink']
-                    embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
-                    embed.set_image(url = image_link)
-                    embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
-                    embed.timestamp = datetime.utcnow()
-                    await self.message.edit(embed = embed)
-            
-                @discord.ui.button(emoji="➡️")
-                async def on_thumbs_down(self, button, interaction):
-                    global result_to_show_index
-                    result_to_show_index = result_to_show_index + 1 if result_to_show_index != 0 else 0
-                    global result
-                    result_to_show = result['items'][result_to_show_index]
-                    image_link = result_to_show['link']
-                    
-                    embed_url = result_to_show['image']['contextLink']
-                    embed = discord.Embed(title = f"{search_query}", url = embed_url, color = embed_color)
-                    embed.set_image(url = image_link)
-                    embed.set_footer(text = f"Requested by {ctx.author.display_name}", icon_url = ctx.author.avatar.url)
-                    embed.timestamp = datetime.utcnow()
-                    await self.message.edit(embed = embed)
-            
-                @discord.ui.button(emoji="\N{BLACK SQUARE FOR STOP}\ufe0f")
-                async def on_stop(self, button, interaction):
-                    self.stop()
-            
-            await MyButtonMenu().start(ctx)
+            image_result_message = MyButtonMenu(search_query, result) 
+            await image_result_message.start(ctx)
         
         except:
             await ctx.channel.send("Search failed. Try again, or not.")
