@@ -41,7 +41,8 @@ initial_extensions = ['cogs.FunCommands',
                       'cogs.ImageCommands', 
                       'cogs.error_handling', 
                       'cogs.AutoResponder',
-                      'cogs.owner']
+                      'cogs.owner',
+                      'cogs.WikiCommands']
 
 
 

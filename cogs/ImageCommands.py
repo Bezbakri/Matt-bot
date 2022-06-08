@@ -445,6 +445,19 @@ class ImageCommands(commands.Cog):
         await ctx.channel.send(file = f)
         '''
         
+    @commands.command(help = "Adds the morbius face filter to your image", aliases = ['morb',])
+    async def morbius(self, ctx, image_link = None):
+        img = await self.get_asset_from_user(ctx, image_link)
+        img = img[0].convert("RGBA")
+        morb_img = img.resize((640, 614))
+        morb_mask = Image.open("assets/morbius.png").convert("RGBA")
+        morb_img.paste(morb_mask, (0,0), morb_mask)
+        
+        with io.BytesIO() as image_binary:
+             morb_img.save(image_binary, 'PNG')
+             image_binary.seek(0)
+             await ctx.send(file=discord.File(fp=image_binary, filename='morbius.png'))
+    
     @commands.command(
         name = "caption",
         help = "Captions your image like a meme."

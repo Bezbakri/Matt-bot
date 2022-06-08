@@ -2,6 +2,7 @@ aiohttp==3.8.1
 aiosignal==1.2.0
 async-timeout==4.0.2
 attrs==21.4.0
+beautifulsoup4==4.11.1
 cachetools==5.1.0
 certifi==2020.6.20
 charset-normalizer==2.0.12
@@ -16,6 +17,7 @@ httplib2==0.20.4
 idna==3.3
 multidict==6.0.2
 nextcord==2.0.0a10
+nextcord-ext-menus==1.5.2
 Pillow==9.1.1
 pilmoji==2.0.1
 protobuf==3.20.1
@@ -27,7 +29,9 @@ pytz==2022.1
 requests==2.27.1
 rsa==4.8
 six==1.16.0
+soupsieve==2.3.2.post1
 uritemplate==4.1.1
 urllib3==1.26.9
+wikipedia==1.4.0
 wincertstore==0.2
 yarl==1.7.2
