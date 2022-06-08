@@ -17,6 +17,7 @@ load_dotenv()
 
 api_key = os.getenv("GOOGLE_CUSTOM_SEARCH_API_TOKEN")
 wiki_cse_token = os.getenv("WIKIPEDIA_SEARCH_ENGINE_ID")
+wookiee_cse_token = os.getenv("WOOKIEEPEDIA_SEARCH_ENGINE_ID")
 resource = build("customsearch", 'v1', developerKey=api_key).cse()
 
 def wikisearch(query):
@@ -45,6 +46,10 @@ def wikisearch(query):
         wiki_text = wiki_text + "```"
     return wiki_text
     
+def wookieesearch(query):
+    search_result = resource.list(q=query, cx=wookiee_cse_token).execute()['items']
+    wookiee_link =  search_result[0]['link']
+    return wookiee_link
     
 
 class WikiCommands(commands.Cog):
@@ -55,6 +60,11 @@ class WikiCommands(commands.Cog):
     async def discordwikisearch(self, ctx, *, query):
         "Returns the summary of a wikipedia article"
         await ctx.send(wikisearch(query))
+    
+    @commands.command(aliases = ['wookie', "starwars"])
+    async def discordwookieesearch(self, ctx, *, query):
+        "Returns the summary of a wookieepedia article"
+        await ctx.send(wookieesearch(query))
         
 def setup(bot):
     bot.add_cog(WikiCommands(bot))
