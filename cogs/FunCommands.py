@@ -85,10 +85,6 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         embed_petersonian.timestamp = datetime.utcnow()
         
         
-        
-        
-        
-        
         copypasta_titles = []
         copypasta_titles_lowercase = []
         copypastas = "assets/copypastas.csv"
@@ -189,12 +185,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         copypasta_titles[15] = "Speedrunning"
         '''
         
-        
-        
-        
-        
-        
-        
+       
         #list of copypastas embed
         backward_emoji = "\u2B05"
         forward_emoji = "\u27A1"
@@ -344,10 +335,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
             else:
                 await ctx.channel.send("Call stopped.")
                 break
-            
-            
-    
-    
+
     
 def setup(bot):
     bot.add_cog(FunCommands(bot))
