@@ -139,7 +139,7 @@ class WikiCommands(commands.Cog):
         await ctx.reply("Respect the double E.")
     @commands.command(aliases = ['wikifind', ])
     async def specificwikisearch(self, ctx, article, keyword):
-        "Searches for a certain header in the wikipedia article you want to search up"
+        "Searches for a certain header in the wikipedia article you want to search up. CURRENTLY ONLY WORKS WITH h3."
         search_result = resource.list(q=article, cx=wiki_cse_token).execute()['items']
         wiki_link =  search_result[0]['link']
         await ctx.send(f"<{wiki_link}>")
@@ -149,17 +149,26 @@ class WikiCommands(commands.Cog):
         wiki_text = soup.find('div', attrs = {"class": "mw-parser-output"})
         
         try:
-            text_to_send = ""
-            for header in wiki_text.find_all('h3'):
-                if keyword.lower() in header.text.lower():
+            for header in wiki_text.find_all('h3'): 
+                if keyword.lower() == header.text.lower():
+                    next_node = header
                     while True:
-                        para_text = header.find_next_sibling("p")
-                        if para_text == None:
+                        next_node = next_node.nextSibling
+                        if next_node == None:
                             break
-                        text_to_send+=para_text
-                    await ctx.send(text_to_send)
+                        if next_node.name is not None:
+                            if next_node.name != "p":
+                                break
+                            
+                            text_to_send =next_node.get_text(strip = True)
+                            await ctx.send(f"```{text_to_send}```")
+                    break
+                else:
+                    pass
+            else:
+                await ctx.send("The topic you were looking for wasn't found.")
         except:
-            await ctx.send("The topic you were looking for wasn't found.")
+            await ctx.send("Some error occurred idk bru 🤓")
         
         
 def setup(bot):
