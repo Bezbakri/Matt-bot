@@ -150,7 +150,7 @@ class WikiCommands(commands.Cog):
         
         try:
             for header in wiki_text.find_all('h3'): 
-                if keyword.lower() == header.text.lower():
+                if keyword.lower() in header.text.lower():
                     next_node = header
                     while True:
                         next_node = next_node.nextSibling
