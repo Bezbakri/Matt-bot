@@ -3,7 +3,6 @@ Dumb discord bot I use for learning and testing stuff.
 Currently has a few cool features, like image search, some image manipulation (for making caption and demotivational poster memes), a (sorta) coinflip, an autoreact for the word "Ratio", the infamous "Hi xyz, I'm Dad!" joke, and most recently, some cool Wiki commands.
 
 [![Link For Invitation](https://img.shields.io/badge/Invite%20to%20Your%20server-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/api/oauth2/authorize?client_id=837011037894737951&permissions=414464732224&scope=applications.commands%20bot)
-(only works when I'm online, will get a server soon)
 
 Optionally, you could try cloning the bot and adding the following .env variables:
 ```
