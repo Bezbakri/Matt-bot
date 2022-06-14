@@ -89,7 +89,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         copypasta_titles_lowercase = []
         copypastas = "assets/copypastas.csv"
         
-        with open(copypastas, "r", newline = '\r\n') as f:
+        with open(copypastas, "r", newline = '\r\n', encoding = "cp1251", errors='ignore') as f:
             freader = csv.reader(f)
             for row in freader:
                 if row[0]:
@@ -120,7 +120,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
             if i ==13:
                 await ctx.channel.send(embed = embed_petersonian)
             else:
-                with open(copypastas, "r", newline = '\r\n') as f:
+                with open(copypastas, "r", newline = '\r\n', encoding = "cp1251", errors='ignore') as f:
                     freader = csv.reader(f)
                     for row in freader:
                         if row[0] == copypasta_titles[i]:
@@ -132,7 +132,7 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
             if arg.lower() == "petersonian":
                 await ctx.channel.send(embed = embed_petersonian)
             else:
-                with open(copypastas, "r", newline = '\r\n') as f:
+                with open(copypastas, "r", newline = '\r\n', encoding = "cp1251", errors='ignore') as f:
                     freader = csv.reader(f)
                     for row in freader:
                         if row[0].lower() == arg.lower():
