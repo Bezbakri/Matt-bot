@@ -58,6 +58,8 @@ class AutoResponder(commands.Cog):
             if "ratio" in message.content.lower():
                 await message.add_reaction(self.bot.upvote)
                 await message.add_reaction(self.bot.downvote)
+            if "🥺" in message.content:
+                await message.reply(">bottom emoji\n\nHi, cutie~")
             if message.author.id == 316125981725425666 or message.author.id == SQUILL_USER_ID:
                 if "gaymers" in message.content.lower():
                     if "morning" in message.content.lower():
@@ -79,7 +81,7 @@ class AutoResponder(commands.Cog):
                 prev_msg =await message.channel.history(limit = 2).flatten()
                 if prev_msg[1].content.lower() == "wrong":
                     await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
-            if start_line_dad_expression.match(message.content, 0, 4):
+            if start_line_dad_expression.match(message.content, 0, 5):
                 rest_of_message = rest_of_message_function(message.content).strip()
                 display_name = await message.guild.fetch_member(BOT_USER_ID)
                 display_name = display_name.display_name
