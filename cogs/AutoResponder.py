@@ -16,7 +16,7 @@ load_dotenv()
 BOT_USER_ID=os.getenv("BOT_USER_ID")
 SQUILL_USER_ID=int(os.getenv("SQUILL_USER_ID"))
 
-start_line_dad_expression = re.compile("[Ii]'*( a)*m ")
+start_line_dad_expression = re.compile("/[Ii]'*[( a)( A)]*[Mm] ")
 
 def rest_of_message_function(message):
     if message.startswith("I'm"):
@@ -31,6 +31,14 @@ def rest_of_message_function(message):
         return message.lstrip("I a").lstrip("m")
     elif message.startswith("i am"):
         return message.lstrip("i a").lstrip("m")
+    elif message.startswith("I AM"):
+        return message.lstrip("I A").lstrip("M")
+    elif message.startswith("IM"):
+        return message.lstrip("IM")
+    elif message.startswith("I'M"):
+        return message.lstrip("I'M")
+    elif message.startswith("iM"):
+        return message.lstrip("iM")
 
 class AutoResponder(commands.Cog):
     def __init__(self, bot):
