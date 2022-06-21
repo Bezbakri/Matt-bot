@@ -16,7 +16,7 @@ load_dotenv()
 BOT_USER_ID=os.getenv("BOT_USER_ID")
 SQUILL_USER_ID=int(os.getenv("SQUILL_USER_ID"))
 
-start_line_dad_expression = re.compile("/[Ii]'*[( a)( A)]*[Mm] ")
+start_line_dad_expression = re.compile("[Ii]'*([( a)( A)])*[Mm] ")
 
 def rest_of_message_function(message):
     if message.startswith("I'm"):
