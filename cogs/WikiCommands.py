@@ -38,8 +38,8 @@ def wikisearch(query):
     wiki_text = f"<{wiki_link}>\n```"
     for line in wiki_text_tags:
         wiki_text = wiki_text + line.text
-    if len(wiki_text) > 1825:
-        wiki_text = wiki_text[:1825] + "..."
+    if len(wiki_text) > 1600:
+        wiki_text = wiki_text[:1600] + "..."
     
     try:
         image_link = search_result[0]['pagemap']['metatags'][0]['og:image']
