@@ -27,26 +27,7 @@ def member_role_color(member):
         
     return 0xEF8A01
 
-def wikisearch(query):
-    search_result = resource.list(q=query, cx=wiki_cse_token).execute()['items']
-    wiki_link =  search_result[0]['link']
 
-    response = requests.get(wiki_link)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    wiki_text_whole = soup.find('div', attrs = {"class": "mw-parser-output"})
-    wiki_text_tags = wiki_text_whole.find_all("p")
-    wiki_text = f"<{wiki_link}>\n```"
-    for line in wiki_text_tags:
-        wiki_text = wiki_text + line.text
-    if len(wiki_text) > 1600:
-        wiki_text = wiki_text[:1600] + "..."
-    
-    try:
-        image_link = search_result[0]['pagemap']['metatags'][0]['og:image']
-        wiki_text = wiki_text + "```\n" + image_link
-    except:
-        wiki_text = wiki_text + "```"
-    return wiki_text
     
 
     
@@ -59,7 +40,41 @@ class WikiCommands(commands.Cog):
     @commands.command(aliases = ['wiki', ])
     async def discordwikisearch(self, ctx, *, query):
         "Returns the summary of a wikipedia article"
-        await ctx.send(wikisearch(query))
+        search_result = resource.list(q=query, cx=wiki_cse_token).execute()['items']
+        wiki_link =  search_result[0]['link']
+
+        response = requests.get(wiki_link)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        wiki_text_whole = soup.find('div', attrs = {"class": "mw-parser-output"})
+        wiki_text_tags = wiki_text_whole.find_all("p")
+        wiki_text = f"<{wiki_link}>\n```"
+        for line in wiki_text_tags:
+            wiki_text = wiki_text + line.text
+        if len(wiki_text) > 1600:
+            wiki_text = wiki_text[:1600] + "..."
+        
+        try:
+            image_link = search_result[0]['pagemap']['metatags'][0]['og:image']
+            if len(image_link)>300:
+                info_table =  wiki_text_whole.find('table')
+                if info_table.find_next_sibling("div", attrs = {"role":"navigation"}):
+                    next_siblings = info_table.find_next_siblings()
+                    image_links = []
+                    for sibling in next_siblings:
+                        image_links.extend(sibling.find_all("img"))
+                else:
+                    image_links = wiki_text_whole.find_all("img")
+                for link in image_links:
+                    if len(link['src'])<300:
+                        if "Status" not in link['src'] and "Red_Pencil" not in link['src']:
+                            image_link = "https:" + link['src']
+                            break
+                else:
+                    image_link = "Image link too long"
+            wiki_text = wiki_text + "```\n" + image_link
+        except:
+            wiki_text = wiki_text + "```"
+        await ctx.send(wiki_text)
     
     @commands.command(aliases = ['wookiee', "starwars"])
     async def discordwookieesearch(self, ctx, *, query):
