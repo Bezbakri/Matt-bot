@@ -48,8 +48,15 @@ class WikiCommands(commands.Cog):
         wiki_text_whole = soup.find('div', attrs = {"class": "mw-parser-output"})
         wiki_text_tags = wiki_text_whole.find_all("p")
         wiki_text = f"<{wiki_link}>\n```"
+        paragraph_text = ""
         for line in wiki_text_tags:
-            wiki_text = wiki_text + line.text
+            paragraph_text+= line.text
+        if not paragraph_text:
+            wiki_text += paragraph_text
+        else:
+            whole_body_text = soup.find('div', attrs = {'id':"bodyContent"})
+            paragraph_text = whole_body_text.text
+            wiki_text += paragraph_text
         if len(wiki_text) > 1600:
             wiki_text = wiki_text[:1600] + "..."
         
