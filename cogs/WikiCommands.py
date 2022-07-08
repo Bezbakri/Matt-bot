@@ -51,7 +51,7 @@ class WikiCommands(commands.Cog):
         paragraph_text = ""
         for line in wiki_text_tags:
             paragraph_text+= line.text
-        if not paragraph_text:
+        if paragraph_text:
             wiki_text += paragraph_text
         else:
             whole_body_text = soup.find('div', attrs = {'id':"bodyContent"})
