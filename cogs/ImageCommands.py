@@ -58,6 +58,14 @@ def retweets_and_likes_generator(lower_limit, upper_limit):
     for i in list_for_raw_number:
         ratio+= i
     return ratio
+
+def convert_to_k(number):
+    if len(number)>7:
+        number = number[:3].replace(",", ".")+"M"
+    elif len(number)>5:
+        number = number[:4].replace(",", ".").rstrip(".")+"K"
+    return number
+                
     
 class MyButtonMenu(menus.Menu):
     def __init__(self, search_query, result):
@@ -622,6 +630,76 @@ class ImageCommands(commands.Cog):
                  meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0, duration = avg_duration)
                  image_binary.seek(0)
                  await ctx.send(file=discord.File(fp=image_binary, filename='motivation.gif'))
+    
+    #biden version of trump command
+    @commands.command(name = "bidentweet", aliases = ["biden", "brandon"], brief = "Makes Biden tweet what you say!")
+    async def joe(self, ctx, *, text = None):
+        """Makes Biden tweet what you say.
+        DISCLAIMER: The name Brandon is there for fun. I do not support right wingers.
+        """
+        text = "".join(text)
+        
+        font = ImageFont.truetype("assets/HelveticaNeueRoman.ttf", size = 97)
+        font_misc = ImageFont.truetype("assets/ArialMdm.ttf", size = 85)
+        
+        # Calculate the average length of a single character of our font.
+        # Note: this takes into account the specific font and font size.
+        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        # Translate this average length into a character count
+        max_char_count = int(1670/ avg_char_width)
+        # Create a wrapped text object using scaled character count
+        text = textwrap.fill(text=text, width=max_char_count).replace("\\n", "\n")
+        
+        text_image_y_dimension = 115
+        for i in text:
+            if i == "\n":
+                text_image_y_dimension+=100
+        
+        mode = "RGB"
+        size = (1670, text_image_y_dimension)
+        color = (255, 255, 255)
+        text_image = Image.new(mode, size, color)
+        
+        #writing_text = ImageDraw.Draw(text_image)
+        writing_text = Pilmoji(text_image)
+        writing_text.text(xy=(0, 0), text=text, font=font, fill='#000000')
+        
+        biden_tweet_header_path = "assets/biden_tweet_header.png"
+        biden_tweet_footer_path = "assets/biden_tweet_footer.png"
+        
+        biden_tweet_footer = Image.open(biden_tweet_footer_path)
+        comments = convert_to_k(retweets_and_likes_generator(1000, 50000))
+        retweets = convert_to_k(retweets_and_likes_generator(8000, 100000))
+        likes = convert_to_k(retweets_and_likes_generator(10000, 1500000))
+        biden_tweet_ratio = ImageDraw.Draw(biden_tweet_footer)
+        
+        #the retweets-likes
+        biden_tweet_ratio.text(xy = (640, 99), text = comments, font = font_misc, fill = "#667886")
+        biden_tweet_ratio.text(xy = (1100, 99), text = retweets, font = font_misc, fill = "#667886")
+        biden_tweet_ratio.text(xy = (1530, 99), text = likes, font = font_misc, fill = "#667886")
+        
+        biden_tweet_header = Image.open(biden_tweet_header_path)
+        biden_tweet_timestamp = ImageDraw.Draw(biden_tweet_header)
+        biden_tweet_timestamp.text(xy = (1580, 99), text = str(random.randint(1,24))+"h", font = font_misc, fill = "#667886")
+        
+        biden_tweet_y_dimension = text_image_y_dimension + 669
+        mode = "RGB"
+        size = (2269, biden_tweet_y_dimension)
+        color = (255, 255, 255)
+        biden_tweet = Image.new(mode, size, color)
+        
+        biden_tweet.paste(biden_tweet_header)
+        biden_tweet.paste(text_image, (501, 370))
+        biden_tweet.paste(biden_tweet_footer, (0, text_image_y_dimension+380))
+        
+        
+        
+        
+        with io.BytesIO() as image_binary:
+             biden_tweet.save(image_binary, 'PNG')
+             image_binary.seek(0)
+             await ctx.send(file=discord.File(fp=image_binary, filename='biden_says.png'))
+        
     
     #slash version of trump command
     @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
