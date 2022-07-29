@@ -31,6 +31,7 @@ def get_prefix(client, message):
 
 intents = discord.Intents.default()
 intents.members = True
+#intents.message_content = True
 
 
 bot = commands.Bot(command_prefix = (get_prefix), intents = intents)
@@ -125,7 +126,7 @@ async def on_guild_join(guild):
     prefixes[str(guild.id)] = "$"
     with open("prefixes.json", "w") as f:
         json.dump(prefixes, f, indent=4)
-
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"with {len(bot.guilds)} war criminal bunkers"))
 
 @bot.event
 async def on_guild_remove(guild):
@@ -135,6 +136,7 @@ async def on_guild_remove(guild):
     prefixes.pop(str(guild.id))
     with open("prefixes.json", "w") as f:
         json.dump(prefixes, f, indent=4)
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name=f"with {len(bot.guilds)} war criminal bunkers"))
 
     
 bot.run(DISCORD_TOKEN)
