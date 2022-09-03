@@ -90,7 +90,7 @@ class AutoResponder(commands.Cog):
                 if prev_msg[1].content.lower() == "wrong":
                     await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
             if start_line_dad_expression.match(message.content, 0, 5):
-                rest_of_message = rest_of_message_function(message.content).strip()
+                rest_of_message = rest_of_message_function(message.clean_content).strip()
                 display_name = await message.guild.fetch_member(BOT_USER_ID)
                 display_name = display_name.display_name
                 await message.reply(f"Hi {rest_of_message}, \nI'm {display_name}.")
