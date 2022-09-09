@@ -52,6 +52,7 @@ class AutoResponder(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self,message):
+        im_response_enabled = self.bot.im_response_config.get(message.guild.id, False)
         if message.author == self.bot.user:
             return
         else:
@@ -89,7 +90,7 @@ class AutoResponder(commands.Cog):
                 prev_msg =await message.channel.history(limit = 2).flatten()
                 if prev_msg[1].content.lower() == "wrong":
                     await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
-            if start_line_dad_expression.match(message.content, 0, 5):
+            if start_line_dad_expression.match(message.content, 0, 5) and im_response_enabled:
                 rest_of_message = rest_of_message_function(message.clean_content).strip()
                 display_name = await message.guild.fetch_member(BOT_USER_ID)
                 display_name = display_name.display_name
@@ -103,6 +104,16 @@ class AutoResponder(commands.Cog):
                     await message.channel.send(f"Hello, my prefix for this server is ``{prefix.return_prefix(message.guild)}``")
             
         
-        #await self.bot.process_commands(message)    
+        #await self.bot.process_commands(message)
+    @commands.command()
+    async def im_toggle(self, ctx):
+        if not self.bot.im_response_config.get(ctx.guild.id):
+            self.bot.im_response_config[ctx.guild.id] = True
+        else:
+            self.bot.im_response_config[ctx.guild.id] = not self.bot.im_response_config[ctx.guild.id]
+            
+        await ctx.send(f'"im" response toggled to {self.bot.im_response_config[ctx.guild.id]}')
+
+
 def setup(bot):
     bot.add_cog(AutoResponder(bot))

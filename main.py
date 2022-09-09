@@ -70,11 +70,17 @@ async def on_ready():
     channel = bot.get_channel(924331444661284914)
     await channel.send("I am alive <:hellofriends:943005593566838794>")
     await channel.send(f"Added {cogs_added} out of {len(initial_extensions)} cogs")
-       
-
-
-
     
+    with open('im_response_config.json', 'r') as f:
+        bot.im_response_config = json.load(f)
+        
+
+@bot.event
+async def on_close():
+    with open('im_response_config.json', 'w') as f:
+        json.dump(bot.im_response_config, f)
+
+
 @bot.command(
     name = "test",
     help = "Tells you how long the bot's been running for. In GMT format.",
