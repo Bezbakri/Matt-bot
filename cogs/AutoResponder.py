@@ -106,6 +106,7 @@ class AutoResponder(commands.Cog):
         
         #await self.bot.process_commands(message)
     @commands.command()
+    @commands.has_permissions(manage_guild=True)
     async def im_toggle(self, ctx):
         if not self.bot.im_response_config.get(ctx.guild.id):
             self.bot.im_response_config[ctx.guild.id] = True
