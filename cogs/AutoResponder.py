@@ -52,7 +52,7 @@ class AutoResponder(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self,message):
-        im_response_enabled = self.bot.im_response_config.get(message.guild.id, False)
+        im_response_enabled = self.bot.im_response_config.get(str(message.guild.id), False)
         if message.author == self.bot.user:
             return
         else:
@@ -108,12 +108,12 @@ class AutoResponder(commands.Cog):
     @commands.command()
     @commands.has_permissions(manage_guild=True)
     async def im_toggle(self, ctx):
-        if not self.bot.im_response_config.get(ctx.guild.id):
-            self.bot.im_response_config[ctx.guild.id] = True
+        if not self.bot.im_response_config.get(str(ctx.guild.id)):
+            self.bot.im_response_config[str(ctx.guild.id)] = True
         else:
-            self.bot.im_response_config[ctx.guild.id] = not self.bot.im_response_config[ctx.guild.id]
+            self.bot.im_response_config[str(ctx.guild.id)] = not self.bot.im_response_config[str(ctx.guild.id)]
             
-        await ctx.send(f'"im" response toggled to {self.bot.im_response_config[ctx.guild.id]}')
+        await ctx.send(f'"im" response toggled to {self.bot.im_response_config[str(ctx.guild.id)]}')
 
 
 def setup(bot):
