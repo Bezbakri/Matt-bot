@@ -71,14 +71,6 @@ async def on_ready():
     await channel.send("I am alive <:hellofriends:943005593566838794>")
     await channel.send(f"Added {cogs_added} out of {len(initial_extensions)} cogs")
     
-    with open('im_response_config.json', 'r') as f:
-        bot.im_response_config = json.load(f)
-        
-
-@bot.event
-async def on_close():
-    with open('im_response_config.json', 'w') as f:
-        json.dump(bot.im_response_config, f)
 
 
 @bot.command(
