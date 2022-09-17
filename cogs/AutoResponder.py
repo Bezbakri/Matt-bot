@@ -16,8 +16,6 @@ import json
 load_dotenv()
 BOT_USER_ID=os.getenv("BOT_USER_ID")
 SQUILL_USER_ID=int(os.getenv("SQUILL_USER_ID")) 
-with open('im_response_config.json', 'r') as f:
-    im_response_config = json.load(f)
 
 start_line_dad_expression = re.compile("[Ii]'*([( a)( A)])*[Mm] ")
 
@@ -55,7 +53,7 @@ class AutoResponder(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self,message):
-        im_response_enabled = bool(im_response_config.get(str(message.author.id), True))
+        im_response_enabled = self.bot.im_response_config.get(str(message.author.id), True)
         if message.author == self.bot.user:
             return
         else:
@@ -111,14 +109,16 @@ class AutoResponder(commands.Cog):
     @commands.command()
     async def im_toggle(self, ctx):
         """Toggles the option for the bot to respond to you a classic dad response."""
-        if not im_response_config.get(str(ctx.author.id)):
-            im_response_config[str(ctx.author.id)] = "False"
-        else:
-            im_response_config[str(ctx.author.id)] = str(not bool(im_response_config.get(str(ctx.author.id))))
         
-        with open('im_response_config.json', 'w') as f:
-            json.dump(im_response_config, f)
-        await ctx.send(f'"im" response toggled to {im_response_config.get(str(ctx.author.id))}')
+        if self.bot.im_response_config.get(str(ctx.author.id)) is None:
+            self.bot.im_response_config[str(ctx.author.id)] = False
+        else:
+            self.bot.im_response_config[str(ctx.author.id)] = not self.bot.im_response_config.get(str(ctx.author.id))
+            
+        with open("im_response_config.json", 'w') as f:
+            json.dump(self.bot.im_response_config, f, indent=2)
+        
+        await ctx.send(f'"im" response toggled to {self.bot.im_response_config.get(str(ctx.author.id))}')
 
 
 def setup(bot):
