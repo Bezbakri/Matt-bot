@@ -11,13 +11,17 @@ from nextcord.ext import commands
 from dotenv import load_dotenv
 import prefix
 import re
-import json
 
 load_dotenv()
 BOT_USER_ID=os.getenv("BOT_USER_ID")
 SQUILL_USER_ID=int(os.getenv("SQUILL_USER_ID")) 
 
 start_line_dad_expression = re.compile("[Ii]'*([( a)( A)])*[Mm] ")
+
+im_response_config = []
+with open("im_response_config.txt") as f:
+    for line in f.readlines():
+        im_response_config.append(int(line.strip("\n")))
 
 def rest_of_message_function(message):
     if message.startswith("I'm"):
@@ -53,7 +57,6 @@ class AutoResponder(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self,message):
-        im_response_enabled = self.bot.im_response_config.get(str(message.author.id), True)
         if message.author == self.bot.user:
             return
         else:
@@ -91,7 +94,7 @@ class AutoResponder(commands.Cog):
                 prev_msg =await message.channel.history(limit = 2).flatten()
                 if prev_msg[1].content.lower() == "wrong":
                     await message.reply("https://en.wikipedia.org/wiki/Kaneda_Castle")
-            if start_line_dad_expression.match(message.content, 0, 5) and im_response_enabled:
+            if start_line_dad_expression.match(message.content, 0, 5) and message.author.id not in im_response_config:
                 rest_of_message = rest_of_message_function(message.clean_content).strip()
                 display_name = await message.guild.fetch_member(BOT_USER_ID)
                 display_name = display_name.display_name
@@ -109,16 +112,18 @@ class AutoResponder(commands.Cog):
     @commands.command()
     async def im_toggle(self, ctx):
         """Toggles the option for the bot to respond to you a classic dad response."""
-        
-        if self.bot.im_response_config.get(str(ctx.author.id)) is None:
-            self.bot.im_response_config[str(ctx.author.id)] = False
+        add = False
+        if ctx.author.id in im_response_config:
+            im_response_config.remove(ctx.author.id)
+            add = True
         else:
-            self.bot.im_response_config[str(ctx.author.id)] = not self.bot.im_response_config.get(str(ctx.author.id))
-            
-        with open("im_response_config.json", 'w') as f:
-            json.dump(self.bot.im_response_config, f, indent=2)
+            im_response_config.append(ctx.author.id)
         
-        await ctx.send(f'"im" response toggled to {self.bot.im_response_config.get(str(ctx.author.id))}')
+        with open("im_response_config", "w") as f:
+            for uID in im_response_config:
+                f.write(str(uID) + "\n")
+        
+        await ctx.send(f'"im" response toggled to {add}')
 
 
 def setup(bot):

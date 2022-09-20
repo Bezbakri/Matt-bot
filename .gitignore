@@ -115,7 +115,7 @@ celerybeat.pid
 .env
 .venv
 prefixes.json
-im_response_config.json
+im_response_config.txt
 env/
 venv/
 ENV/
