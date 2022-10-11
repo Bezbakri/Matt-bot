@@ -701,6 +701,65 @@ class ImageCommands(commands.Cog):
              await ctx.send(file=discord.File(fp=image_binary, filename='biden_says.png'))
         
     
+    @commands.command(name = "meme")
+    async def the_memer(self, ctx, image_link = None, *, caption = None):
+        """Adds text to your image like a classic meme."""
+        meme_format = await self.get_asset_from_user(ctx, image_link, allow_gif = True)
+        if caption:
+            caption = "".join(caption)
+            caption = meme_format[1]+ " " + caption
+        else:
+            caption = meme_format[1]
+        meme_format = meme_format[0]
+        meme_format_type = meme_format.format
+        meme_format_x_dimension, meme_format_y_dimension = meme_format.size
+        aspect_ratio = meme_format_y_dimension/meme_format_x_dimension
+        meme_width = 600
+        meme_height = int(meme_width*aspect_ratio)
+        
+        caption = caption.upper().partition("|")
+        title = caption[0]
+        subtitle = caption[2]
+        
+        font = ImageFont.truetype("assets/impact.ttf", size = 54)
+        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count_title = int(700/avg_char_width)
+        title = textwrap.fill(text = title, width = max_char_count_title).replace("\\n", "\n")
+        
+        mode = "RGB"
+        size = (meme_width, meme_height)
+        color = (0, 0, 0)
+        if meme_format_type != "GIF":
+            meme = Image.new(mode, size, color)
+            meme_format = meme_format.resize(size)
+            meme.paste(meme_format)
+            to_write = Pilmoji(meme)
+            to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
+            to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
+            del to_write
+            with io.BytesIO() as image_binary:
+                 meme.save(image_binary, 'PNG')
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='meme.png'))
+        else:
+            frames = []
+            for frame in ImageSequence.Iterator(meme_format):
+                meme_frame = Image.new(mode, size, color)
+                frame = frame.resize(size)
+                meme_frame.paste(frame)
+                to_write = Pilmoji(meme_frame)
+                to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
+                to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
+                del to_write
+                frames.append(meme_frame)
+            avg_duration = meme_format.info['duration']
+            meme_first_frame = frames[0]
+            with io.BytesIO() as image_binary:
+                 meme_first_frame.save(image_binary, format = 'GIF', append_images = frames[1:], save_all = True, loop=0, duration = avg_duration)
+                 image_binary.seek(0)
+                 await ctx.send(file=discord.File(fp=image_binary, filename='motivation.gif'))
+        
+    
     #slash version of trump command
     @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
     async def slash_command_cog(self, 
