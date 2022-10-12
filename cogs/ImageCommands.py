@@ -61,7 +61,7 @@ def retweets_and_likes_generator(lower_limit, upper_limit):
 
 def convert_to_k(number):
     if len(number)>7:
-        number = number[:3].replace(",", ".")+"M"
+        number = number[0] + "." + number[1:3] + "M"
     elif len(number)>5:
         number = number[:4].replace(",", ".").rstrip(".")+"K"
     return number
