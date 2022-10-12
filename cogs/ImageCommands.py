@@ -734,8 +734,8 @@ class ImageCommands(commands.Cog):
             meme_format = meme_format.resize(size)
             meme.paste(meme_format)
             to_write = Pilmoji(meme)
-            to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
-            to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
+            to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
+            to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
             del to_write
             with io.BytesIO() as image_binary:
                  meme.save(image_binary, 'PNG')
@@ -748,8 +748,8 @@ class ImageCommands(commands.Cog):
                 frame = frame.resize(size)
                 meme_frame.paste(frame)
                 to_write = Pilmoji(meme_frame)
-                to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
-                to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center",)
+                to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
+                to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
                 del to_write
                 frames.append(meme_frame)
             avg_duration = meme_format.info['duration']
