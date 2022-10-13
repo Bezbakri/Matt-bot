@@ -717,14 +717,19 @@ class ImageCommands(commands.Cog):
         meme_width = 600
         meme_height = int(meme_width*aspect_ratio)
         
+        font = ImageFont.truetype("assets/impact.ttf", size = 54)
+        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count_title = int(700/avg_char_width)
+        caption = textwrap.fill(text = caption, width = max_char_count_title).replace("\\n", "\n")
+        
         caption = caption.upper().partition("|")
         title = caption[0]
         subtitle = caption[2]
         
-        font = ImageFont.truetype("assets/impact.ttf", size = 54)
-        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-        max_char_count_title = int(700/avg_char_width)
-        title = textwrap.fill(text = title, width = max_char_count_title).replace("\\n", "\n")
+        padding = 25
+        for i in subtitle:
+            if i == "\n":
+                padding += 60
         
         mode = "RGB"
         size = (meme_width, meme_height)
@@ -735,7 +740,7 @@ class ImageCommands(commands.Cog):
             meme.paste(meme_format)
             to_write = Pilmoji(meme)
             to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
-            to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
+            to_write.text(xy = (300, meme_height - padding), text = subtitle, font = font, fill = '#ffffff', anchor = "md", align= "center", stroke_width=3, stroke_fill="#000000",)
             del to_write
             with io.BytesIO() as image_binary:
                  meme.save(image_binary, 'PNG')
@@ -749,7 +754,7 @@ class ImageCommands(commands.Cog):
                 meme_frame.paste(frame)
                 to_write = Pilmoji(meme_frame)
                 to_write.text(xy = (300, 15), text = title, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
-                to_write.text(xy = (300, meme_height - 75), text = subtitle, font = font, fill = '#ffffff', anchor = "ma", align= "center", stroke_width=3, stroke_fill="#000000",)
+                to_write.text(xy = (300, meme_height - padding), text = subtitle, font = font, fill = '#ffffff', anchor = "md", align= "center", stroke_width=3, stroke_fill="#000000",)
                 del to_write
                 frames.append(meme_frame)
             avg_duration = meme_format.info['duration']
