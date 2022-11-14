@@ -188,7 +188,37 @@ class WikiCommands(commands.Cog):
                 else:
                     pass
             else:
-                await ctx.send("The topic you were looking for wasn't found.")
+                for header in wiki_text.find_all('h2'): 
+                    if keyword.lower() in header.text.lower():
+                        await ctx.send("Found something")
+                        next_node = header
+                        while True:
+                            next_node = next_node.nextSibling
+                            await ctx.send(next_node)
+                            if next_node == None:
+                                break
+                            if next_node.name is not None:
+                                if next_node.name != "h3" or next_node.name != "p":
+                                    break
+                                if next_node.name == "h3":
+                                    await ctx.send(f"**{next_node.text}**")
+                                    while True:
+                                        next_node = next_node.nextSibling
+                                        if next_node == None:
+                                            break
+                                        if next_node.name is not None:
+                                            if next_node.name != "p":
+                                                break
+                                            
+                                            text_to_send =next_node.get_text(strip = True)
+                                            await ctx.send(f"```{text_to_send}```")
+                                text_to_send =next_node.get_text(strip = True)
+                                await ctx.send(f"```{text_to_send}```")
+                        break
+                    else:
+                        pass
+                else:
+                    await ctx.send("The topic you were looking for wasn't found.")
         except:
             await ctx.send("Some error occurred idk bru 🤓")
         
