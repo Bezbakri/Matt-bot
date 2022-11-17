@@ -17,6 +17,7 @@ BOT_USER_ID=os.getenv("BOT_USER_ID")
 SQUILL_USER_ID=int(os.getenv("SQUILL_USER_ID")) 
 
 start_line_dad_expression = re.compile("[Ii]'*([( a)( A)])*[Mm] ")
+ratio_line_expression = re.compile("ratio((ing)|(es)|(ed)|\s|d|s|!|\.|\?|\n)+")
 
 im_response_config = []
 with open("im_response_config.txt") as f:
@@ -68,7 +69,7 @@ class AutoResponder(commands.Cog):
                 await message.add_reaction(self.bot.hello_friends_emoji)
             if "sus" in message.content.lower():
                 await message.add_reaction(self.bot.amogus_emoji)
-            if "ratio" in message.content.lower():
+            if ratio_line_expression.search(message.content.lower()) or message.content.lower().strip() == "ratio":
                 await message.add_reaction(self.bot.upvote)
                 await message.add_reaction(self.bot.downvote)
             if "🥺" in message.content:
