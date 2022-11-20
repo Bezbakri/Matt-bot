@@ -765,6 +765,39 @@ class ImageCommands(commands.Cog):
                  await ctx.send(file=discord.File(fp=image_binary, filename='motivation.gif'))
         
     
+    @commands.command(name = "whisper")
+    async def i_know_what_you_are(self, ctx, image_link = None, *, caption = None):
+        """Makes a whisper meme."""
+        image = await self.get_asset_from_user(ctx, image_link)
+        if caption:
+            caption = "".join(caption)
+            caption = image[1]+ " " + caption
+        else:
+            caption = image[1]
+        image = image[0]
+        
+        image_x_dimension, image_y_dimension = image.size
+        aspect_ratio = image_y_dimension/image_x_dimension
+        image_width = 600
+        image_height = int(image_width*aspect_ratio)
+        image = image.resize((image_width, image_height))
+        
+        
+        font = ImageFont.truetype("assets/whisper.ttf", size = 66)
+        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count_title = int(700/avg_char_width)
+        caption = textwrap.fill(text = caption, width = max_char_count_title).replace("\\n", "\n")
+        
+        to_write = Pilmoji(image)
+        to_write.text(xy = (300, image_height / 2), text = caption, font = font, fill = '#ffffff', anchor = "ms", align= "center", stroke_width=3, stroke_fill="#000000",)
+        del to_write
+        
+        with io.BytesIO() as image_binary:
+             image.save(image_binary, 'PNG')
+             image_binary.seek(0)
+             await ctx.send(file=discord.File(fp=image_binary, filename='whisper.png'))        
+            
+    
     #slash version of trump command
     @discord.slash_command(name = "trumptwit", description = "Trump tweets what you say!")
     async def slash_command_cog(self, 
