@@ -8,6 +8,13 @@ Created on Fri Nov 18 16:07:58 2022
 import nextcord as discord
 from nextcord.ext import commands
 import googletrans
+import deep_translator
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+TRANSLATION_API_KEY = os.getenv("TRANSLATION_API_KEY")
 
 class Translate(commands.Cog):
     def __init__(self, bot):
@@ -26,15 +33,31 @@ class Translate(commands.Cog):
     @commands.command(aliases = ["englishPls", ])
     async def translateToEnglish(self, ctx, *, text):
         """Translates text to English."""
+        
+        detectedLang = deep_translator.single_detection(text, api_key = TRANSLATION_API_KEY)
+        await ctx.send(f"Possible language = {detectedLang}")
+        
+        translatedText = deep_translator.GoogleTranslator(source = "auto", target = "en").translate(text)
+        await ctx.send(translatedText)
+        
         # BROKEN LIBRARY, WILL SWITCH TO SOMETHING BETTER LATER
-        translator = googletrans.Translator()
+        #translator = googletrans.Translator()
         #possibleLang = translator.detect(text)
         #await ctx.send("Detected language")
         #await ctx.send(possibleLang)
-        translation = translator.translate(text)
-        await ctx.send("Text translated")
-        await ctx.send(translation.text)
+        #translation = translator.translate(text)
+        #await ctx.send("Text translated")
+        #await ctx.send(translation.text)
         #await ctx.send(f"```{possibleLang}\n{translation}```")
+        
+    @commands.command()
+    async def translate(self, ctx, target, *, text):
+        """Translate text to the specified language."""
+        try:
+            translatedText = deep_translator.GoogleTranslator(source = "auto", target = target).translate(text)
+            await ctx.send(translatedText)
+        except:
+            await ctx.send("Mofo gimme a valid language code.")
     
 
 

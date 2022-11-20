@@ -12,8 +12,10 @@ SEARCH_ENGINE_ID
 WIKIPEDIA_SEARCH_ENGINE_ID
 WOOKIEEPEDIA_SEARCH_ENGINE_ID
 BOT_USER_ID
+TRANSLATION_API_KEY
 ```
 (The search engine IDs are google custom search engine IDs, with the latter two searching wikipedia.org and wookieepedia exclusively, respectively.)
+(There is also the TRANSLATION_API_KEY, which can be acquired from [here](https://detectlanguage.com/documentation) for free)
 (There's also a "SQUILL_USER_ID" env variable. Add that and use your own discord user ID as the value.)
 
 ## I'm a beginner, so the code is trash
