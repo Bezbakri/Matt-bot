@@ -116,6 +116,17 @@ async def setprefix(ctx, prefix):
             bot.unload_extension("cogs.AutoResponder")
             bot.load_extension("cogs.AutoResponder")
 
+
+class NewHelpCommand(commands.MinimalHelpCommand):
+    async def help(self):
+        """Attempt at rewriting the default help command. Will finish this later"""
+        destination = self.get_destination()
+        for page in self.paginator.pages:
+            emby = discord.Embed(description=page)
+            await destination.send(embed=emby)
+    
+bot.help_command = NewHelpCommand()
+
 @bot.event
 async def on_guild_join(guild):
     with open("prefixes.json", "r") as f:
