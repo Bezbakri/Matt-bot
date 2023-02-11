@@ -114,6 +114,10 @@ class MyButtonMenu(menus.Menu):
     async def on_stop(self, payload):
         self.stop()
         
+    @menus.button("🗑️")
+    async def delete_message(self, payload):
+        await self.message.delete()
+        
 class ImageCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
