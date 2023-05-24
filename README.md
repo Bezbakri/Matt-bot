@@ -29,6 +29,6 @@ Also, the bot is written in nextcord, a fork of discord.py.
 
 <img src = "https://github.com/Bezbakri/Matt-bot/blob/main/assets/trump_tweet_example.png?raw=true" alt = "trump tweet example">
 
-[The file in question](cogs/ImageCommands.py#L304) (go to line 304)
+[The file in question](cogs/ImageCommands.py#L308) (go to line 308)
 
 (There is also a Biden version below)

@@ -10,6 +10,7 @@ from nextcord import Interaction, Message
 from datetime import datetime, timezone
 import pytz
 import os
+from os.path import join, isfile
 from dotenv import load_dotenv
 from nextcord.ext import commands
 import sys, traceback
@@ -38,22 +39,23 @@ bot = commands.Bot(command_prefix = (get_prefix), intents = intents)
 
 
 
-initial_extensions = ['cogs.FunCommands', 
+cog_dir = "cogs"
+
+"""initial_extensions = ['cogs.FunCommands', 
                       'cogs.ImageCommands', 
                       'cogs.error_handling', 
                       'cogs.AutoResponder',
                       'cogs.owner',
                       'cogs.WikiCommands',
-                      'cogs.Translate']
-
+                      'cogs.Translate']"""
+initial_extensions = [f.replace(".py", "") for f in os.listdir(cog_dir) if isfile(join(cog_dir, f))]
 
 
 if __name__ == '__main__':
     global cogs_added
     cogs_added = 0
     for extension in initial_extensions:
-        bot.load_extension(extension)
-        
+        bot.load_extension(cog_dir + "." + extension)
         cogs_added+=1
 
 
