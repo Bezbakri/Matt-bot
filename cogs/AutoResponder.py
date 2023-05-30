@@ -69,7 +69,7 @@ class AutoResponder(commands.Cog):
                 await message.add_reaction(self.bot.hello_friends_emoji)
             if "sus" in message.content.lower():
                 await message.add_reaction(self.bot.amogus_emoji)
-            if ratio_line_expression.search(message.content.lower()) or message.content.lower().strip() == "ratio":
+            if ratio_line_expression.search(message.content.lower()) or message.content.split()[-1].lower() == "ratio":
                 await message.add_reaction(self.bot.upvote)
                 await message.add_reaction(self.bot.downvote)
             if "🥺" in message.content:
