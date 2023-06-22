@@ -120,7 +120,7 @@ class AutoResponder(commands.Cog):
         else:
             im_response_config.append(ctx.author.id)
         
-        with open("im_response_config", "w") as f:
+        with open("im_response_config.txt", "w") as f:
             for uID in im_response_config:
                 f.write(str(uID) + "\n")
         
