@@ -304,6 +304,14 @@ The reason is the left's lack of work ethic ('go fast' rather than 'do it right'
         response_list = ["Yes!", "No!"]
         choice = random.randint(0,1)
         await interaction.response.send_message(response_list[choice])
+        
+    @commands.command()
+    async def joinpos(self, ctx, member: discord.Member = None):
+        """Calculates your join position."""
+        member = member if member else ctx.author
+        order = sorted(ctx.guild.members, key=lambda m: m.joined_at)
+        join_pos = order.index(member) + 1
+        await ctx.send(join_pos)
     
     @commands.command(
         name = "telephone",
