@@ -30,9 +30,8 @@ def get_prefix(client, message):
         prefixes = json.load(f)
     return prefixes.get(str(guild.id), "$")
 
-intents = discord.Intents.default()
-intents.members = True
-#intents.message_content = True
+intents = discord.Intents.all()
+
 
 
 bot = commands.Bot(command_prefix = (get_prefix), intents = intents)

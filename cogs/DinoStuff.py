@@ -76,9 +76,8 @@ class DinoStuff(commands.Cog):
         nhm_main_link = "https://www.nhm.ac.uk"
         await ctx.send(f"# {dino['name']}\n\n**Wikipedia link:** <{wikipedia_main_link + dino['name']}>\n**Additional link from the NHM UK:** {nhm_main_link + dino['url']}")
         
-    @discord.slash_command(name = "RandomDinoFact")
+    @discord.slash_command(name = "RandomDinoFact", description = "Gives you a random dino fact!")
     async def RandomDinoFactSlash(self, interaction:Interaction):
-        """Gives you a random dino fact!"""
         fact = choice(self.facts_list)
         await interaction.response.send_message(f"**{fact[0]}**\n\n{fact[1]}\n*Did you know? The largest T-Rex skeleton ever discovered was named Sue*")
       
