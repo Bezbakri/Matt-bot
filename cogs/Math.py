@@ -16,6 +16,55 @@ class Math(commands.Cog):
     def isOperand(self, op) -> bool:
         list_of_ops = ["+", "-", "*", "/", "%", "^", "**", "(", ")"]
         return op not in list_of_ops
+    
+    def checkIfFloat(self, num) -> bool:
+        #Checks if number is a float
+        try:
+            float(num)
+            return True
+        except:
+            return False
+    
+    def evaluateOperation(self, left_elem, right_elem, operator):
+        #evaluates an expression (horrible code)
+        #TODO: FIX MULT, DIV, ETC
+        if operator == "+":
+            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
+                return float(left_elem) + float(right_elem)
+            else:
+                return f"{left_elem} + {right_elem}"
+        if operator == "-":
+            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
+                return float(left_elem) - float(right_elem)
+            else:
+                return f"{left_elem} - {right_elem}"
+        if operator == "%":
+            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
+                return float(left_elem) % float(right_elem)
+            else:
+                return f"Can't find the remainder of {left_elem} divided by {right_elem}"
+        if operator == "*":
+            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
+                return float(left_elem) * float(right_elem)
+            else:
+                return "Will add support later"
+        if operator == "/":
+            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
+                return float(left_elem) / float(right_elem)
+            else:
+                return "Will add support later"
+        if operator == "%":
+            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
+                return float(left_elem) % float(right_elem)
+            else:
+                return "Will add support later"
+        if operator == "**" or operator == "^":
+            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
+                return float(left_elem) ** float(right_elem)
+            else:
+                return "Will add support later"
+        
+        
         
     def convertToPostfix(self, infix) -> list:
         """Convert infix expression (taken as a list) to a postfix expression"""
@@ -48,7 +97,8 @@ class Math(commands.Cog):
             else:
                 right_elem = stack.pop()
                 left_elem = stack.pop()
-                #will write a function to evaluate this properly tomorrow
+                stack.append(str(self.evaluateOperation(left_elem, right_elem, char)))
+        return stack.pop()
 
     @commands.command()
     async def simpleCalc(self, ctx, *, exp):
@@ -64,7 +114,8 @@ class Math(commands.Cog):
         for i, element in enumerate(infix):
             if element == "(" and i > 0 and self.isOperand(infix[i - 1]):
                 infix.insert(i, "*")
-        await ctx.send(self.convertToPostfix(infix))
+        postfix = self.convertToPostfix(infix)
+        await ctx.send(self.evaluatePostfixExpression(postfix))
         
     @commands.command()
     async def add(self, ctx, num1, num2):
