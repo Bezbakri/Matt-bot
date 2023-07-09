@@ -24,6 +24,21 @@ class Math(commands.Cog):
             return True
         except:
             return False
+        
+    def separateCoefficientAndVariable(self, term : str):
+        coefficient = ""
+        i = 0
+        while i < len(term):
+            if term[i].isdigit() or term[i] != ".":
+                break
+            coefficient += term[i]
+        variable = term[i : ]
+        if coefficient[0] == ".":
+            coefficient = "0" + coefficient
+        if coefficient[-1] == "0":
+            coefficient = coefficient[ : -1]
+        return coefficient, variable
+    
     
     def evaluateOperation(self, left_elem, right_elem, operator):
         #evaluates an expression (horrible code)
