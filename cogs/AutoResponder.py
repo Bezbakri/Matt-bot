@@ -58,7 +58,7 @@ class AutoResponder(commands.Cog):
         
     @commands.Cog.listener()
     async def on_message(self,message):
-        if message.author == self.bot.user:
+        if message.author == self.bot.user or message.author.bot:
             return
         else:
             for i in self.bot.bad_words_list:
