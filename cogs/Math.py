@@ -29,13 +29,17 @@ class Math(commands.Cog):
         coefficient = ""
         i = 0
         while i < len(term):
-            if term[i].isdigit() or term[i] != ".":
+            if term[i].isdigit() or term[i] == ".":
+                coefficient += term[i]
+            else:
                 break
-            coefficient += term[i]
+            i += 1
         variable = term[i : ]
+        if coefficient == "":
+             coefficient = "1"
         if coefficient[0] == ".":
             coefficient = "0" + coefficient
-        if coefficient[-1] == "0":
+        if coefficient[-1] == ".":
             coefficient = coefficient[ : -1]
         return coefficient, variable
     
@@ -62,17 +66,29 @@ class Math(commands.Cog):
             if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
                 return float(left_elem) * float(right_elem)
             else:
-                return "Will add support later"
+                coefficient1, variable1 = self.separateCoefficientAndVariable(left_elem)
+                coefficient2, variable2 = self.separateCoefficientAndVariable(right_elem)
+                coefficient = float(coefficient1) * float(coefficient2)
+                variable = variable1 + variable2
+                return str(coefficient) + variable
         if operator == "/":
             if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
                 return float(left_elem) / float(right_elem)
             else:
-                return "Will add support later"
-        if operator == "%":
-            if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
-                return float(left_elem) % float(right_elem)
-            else:
-                return "Will add support later"
+                coefficient1, variable1 = self.separateCoefficientAndVariable(left_elem)
+                coefficient2, variable2 = self.separateCoefficientAndVariable(right_elem)
+                coefficient = float(coefficient1) / float(coefficient2)
+                variable = variable1
+                lower_half = ""
+                for char in variable2:
+                    if char in variable:
+                        variable = variable.replace(char, '', 1)
+                        print(variable)
+                    else:
+                        lower_half += char
+                if lower_half != "":
+                    variable += '/' + lower_half
+                return str(coefficient) + variable
         if operator == "**" or operator == "^":
             if self.checkIfFloat(left_elem) and self.checkIfFloat(right_elem):
                 return float(left_elem) ** float(right_elem)
