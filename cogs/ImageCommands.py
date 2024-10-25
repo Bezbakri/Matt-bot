@@ -250,7 +250,7 @@ class ImageCommands(commands.Cog):
         #image_name = "assets/search_result.png"
         
         try:
-            result = resource.list(q=search_query, cx=cse_token, searchType='image').execute()
+            result = resource.list(q=search_query, cx=cse_token, searchType='image', safe="high").execute()
             await ctx.channel.send("Search done!")
             #result_to_show_index = random.randint(0, len(result['items']))
             

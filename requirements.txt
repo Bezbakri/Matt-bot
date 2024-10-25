@@ -4,7 +4,7 @@ google_api_python_client==2.48.0
 googletrans==3.0.0
 nextcord==2.6.0
 nextcord_ext_menus==1.5.2
-Pillow==9.1.1
+#Pillow==9.1.1
 Pillow==10.2.0
 pilmoji==2.0.1
 python-dotenv==1.0.1
